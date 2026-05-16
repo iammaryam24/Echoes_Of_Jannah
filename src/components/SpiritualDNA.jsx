@@ -14,7 +14,8 @@ import {
   Droplets, BellRing, FlameKindling, MapPin,
   Layers, Volume2, Mic, Music, Quote,
   Feather, Globe, Lock, Unlock, Plus, Minus,
-  Check, AlertCircle, HelpCircle, Loader
+  Check, AlertCircle, HelpCircle, Loader,
+  ArrowLeft
 } from 'lucide-react';
 import { useUser } from '../contexts/UserContext';
 import toast from 'react-hot-toast';
@@ -30,6 +31,7 @@ const PROPHETS = [
     desc: "The first human and first prophet, created from clay and taught all names.",
     fullStory: "Allah created Adam from clay and breathed into him His spirit. He was taught the names of all things, a knowledge that even the angels did not possess. Commanded to prostrate, the angels obeyed while Iblis refused, marking the beginning of the spiritual struggle. Adam and Hawwa resided in Paradise but were eventually tested and descended to Earth. Their sincere repentance became the archetype for all humanity: that man may stumble, but the door of Divine Mercy is always open. Adam was the first to build the Kaaba, establishing the first sanctuary of monotheism on Earth.",
     miracles: ["Created from clay without parents", "Taught all names by Allah", "First to receive prophethood", "Built the first Kaaba"],
+    sayings: ["O my Lord, we have wronged ourselves. If You do not forgive us and have mercy upon us, we will surely be among the losers.", "Glory be to You, we have no knowledge except what You have taught us."],
     teachings: ["Repent sincerely after sins", "Satan is humanity's enemy", "Knowledge is a gift from Allah", "Humility before Allah"],
     verses: ["And He taught Adam the names - all of them... (2:31)", "Indeed, I will make upon the earth a successive authority. (2:30)"],
     lessons: ["Sincere repentance", "Avoid arrogance", "Know your enemy (Satan)", "Seek knowledge"],
@@ -43,7 +45,8 @@ const PROPHETS = [
     miracle: "Created from clay without parents and taught all names by Allah",
     type: "Messenger",
     era: "Beginning of Humanity",
-    xpReward: 15
+    xpReward: 15,
+    gradient: "from-amber-100 to-emerald-100"
   },
   {
     id: 2,
@@ -54,6 +57,7 @@ const PROPHETS = [
     desc: "Known for his wisdom, writing, and being raised to a high station.",
     fullStory: "Prophet Idris was a descendant of Adam through his son Seth. He was the first to write with a pen and was skilled in astronomy, mathematics, and tailoring. He called people to worship Allah and follow the path of Adam. He was known for his patience, truthfulness, and deep knowledge. Allah raised him to a high station, and according to some narrations, he was taken to the fourth heaven where he resides.",
     miracles: ["First to write with pen", "Knowledge of astronomy", "Raised to high station", "Master of multiple sciences"],
+    sayings: ["Happy is he who looks at his own faults and does not look at the faults of others.", "The best of wealth is contentment, and the best of provision is piety."],
     teachings: ["Value of knowledge", "Patience in da'wah", "Writing preserves wisdom", "Balance worldly and spiritual knowledge"],
     verses: ["And mention in the Book, Idris. Indeed, he was a man of truth and a prophet. And We raised him to a high station. (19:56-57)"],
     lessons: ["Knowledge is powerful", "Patience brings elevation", "Truthfulness is essential", "Teach through writing"],
@@ -67,7 +71,8 @@ const PROPHETS = [
     miracle: "First to write with pen and raised to a high station by Allah",
     type: "Prophet",
     era: "Early Humanity",
-    xpReward: 20
+    xpReward: 20,
+    gradient: "from-blue-100 to-indigo-100"
   },
   {
     id: 3,
@@ -78,6 +83,7 @@ const PROPHETS = [
     desc: "Preached for 950 years and built the ark to save believers from the great flood.",
     fullStory: "Prophet Nuh preached for 950 years with patience, calling people day and night. Despite his efforts, only about 80 people believed. He built the ark by Allah's command under mockery. When the flood came, all disbelievers drowned. The ark settled on Mount Judi.",
     miracles: ["The great ark", "The flood covering Earth", "950 years of preaching", "Animals coming in pairs"],
+    sayings: ["O my Lord, forgive me and my parents and whoever enters my house a believer and the believing men and believing women.", "My Lord, do not leave upon the earth from among the disbelievers as much as one inhabitant."],
     teachings: ["Patience in da'wah", "Trust Allah's plan", "Family guidance", "Never give up on people"],
     verses: ["And We sent Noah to his people, and he remained among them a thousand years minus fifty... (29:14)"],
     lessons: ["Never lose hope", "Obey Allah's commands", "Save your family through faith", "Patience against mockery"],
@@ -91,7 +97,8 @@ const PROPHETS = [
     miracle: "The great ark that saved believers from the flood",
     type: "Messenger",
     era: "Ancient Times",
-    xpReward: 25
+    xpReward: 25,
+    gradient: "from-cyan-100 to-blue-100"
   },
   {
     id: 4,
@@ -102,6 +109,7 @@ const PROPHETS = [
     desc: "Sent to the mighty people of 'Ad who built great structures and were destroyed by a fierce wind.",
     fullStory: "Prophet Hud was sent to the people of 'Ad who lived in Al-Ahqaf. They were tall, strong people who became arrogant and worshipped idols. Hud called them to worship Allah alone, but they rejected him. A fierce wind destroyed them, saving only Hud and the believers.",
     miracles: ["Survived the destroying wind", "Prophesied the punishment", "Withheld rain miracle"],
+    sayings: ["I only desire reform as far as I am able, and my success is only through Allah.", "O my people, ask forgiveness of your Lord and then repent to Him."],
     teachings: ["Arrogance leads to destruction", "Strength is from Allah", "Worship Allah alone", "Warn before punishment"],
     verses: ["And to 'Ad [We sent] their brother Hud. He said, 'O my people, worship Allah...' (7:65)"],
     lessons: ["Don't be arrogant with power", "Heed warnings", "Material strength can't save", "True power is with Allah"],
@@ -115,7 +123,8 @@ const PROPHETS = [
     miracle: "Survived the devastating wind that destroyed his people",
     type: "Messenger",
     era: "Ancient Arabia",
-    xpReward: 20
+    xpReward: 20,
+    gradient: "from-slate-100 to-blue-100"
   },
   {
     id: 5,
@@ -126,6 +135,7 @@ const PROPHETS = [
     desc: "Sent to Thamud who were given a miraculous she-camel as a sign from Allah.",
     fullStory: "Prophet Salih was sent to the people of Thamud who carved homes in mountains. Allah sent a miraculous she-camel from a rock as a sign. The disbelievers killed the camel, and a thunderous blast destroyed them.",
     miracles: ["She-camel from rock", "Camel giving abundant milk", "Precise prophecy of punishment"],
+    sayings: ["O my people, worship Allah; you have no deity other than Him.", "He produced you from the earth and settled you in it, so ask forgiveness of Him and then repent to Him."],
     teachings: ["Respect Allah's signs", "Share resources justly", "Don't test Allah", "Wickedness destroys"],
     verses: ["And to Thamud [We sent] their brother Salih... (7:73)"],
     lessons: ["Respect divine signs", "Justice in sharing", "Warning before punishment", "Arrogant leaders misguide"],
@@ -139,7 +149,8 @@ const PROPHETS = [
     miracle: "A miraculous she-camel emerged from solid rock",
     type: "Messenger",
     era: "Ancient Arabia",
-    xpReward: 20
+    xpReward: 20,
+    gradient: "from-amber-100 to-orange-100"
   },
   {
     id: 6,
@@ -150,6 +161,7 @@ const PROPHETS = [
     desc: "Father of prophets, rebuilt the Kaaba, tested with sacrifice of his son.",
     fullStory: "Born in a society of idolaters in Babylon, Ibrahim (AS) used his intellect to realize the existence of a single Creator from a young age. He challenged his father and his people, eventually being thrown into a massive fire which Allah made cool and safe for him. He is the Father of Prophets, through whose lineage many messengers came. His life was a series of trials: leaving his family in the desert, and the command to sacrifice his son Ismail, both of which he met with absolute submission. Alongside Ismail, he rebuilt the Kaaba, establishing the rites of Hajj.",
     miracles: ["Fire becoming cool", "Zamzam water spring", "Ram from Paradise", "Reviving dead birds"],
+    sayings: ["My Lord, grant me [a child] from among the righteous.", "Indeed, I am going to my Lord; He will guide me."],
     teachings: ["Complete submission to Allah", "Stand against falsehood", "Hospitality", "Trust Allah absolutely"],
     verses: ["And who is better in religion than one who submits himself to Allah... (4:125)", "Allah said, 'O fire, be coolness and safety upon Abraham.' (21:69)"],
     lessons: ["Complete faith", "Sacrifice for Allah", "Standing for truth alone", "Hospitality to guests"],
@@ -165,7 +177,8 @@ const PROPHETS = [
     miracle: "The fire became cool and safe when he was thrown into it",
     type: "Messenger",
     era: "Mesopotamia",
-    xpReward: 30
+    xpReward: 30,
+    gradient: "from-orange-100 to-rose-100"
   },
   {
     id: 7,
@@ -176,6 +189,7 @@ const PROPHETS = [
     desc: "Nephew of Ibrahim, sent to the people of Sodom who practiced unprecedented immorality.",
     fullStory: "Prophet Lut warned the people of Sodom against immorality. Angels visited him as a test for the people. Lut left with his family at night before the cities were overturned.",
     miracles: ["Angels visiting in human form", "Blinding the mob", "Cities overturned", "Rain of stones"],
+    sayings: ["My Lord, support me against the corrupting people.", "O my people, these are my daughters; they are purer for you. So fear Allah and do not disgrace me concerning my guests."],
     teachings: ["Stand against immorality", "Protect the vulnerable", "Don't look back at sins", "Obedience saves"],
     verses: ["And [We sent] Lot, when he said to his people, 'Do you commit such immorality...' (7:80)"],
     lessons: ["Moral courage", "Protecting guests", "Leaving evil behind", "Don't sympathize with sin"],
@@ -189,7 +203,8 @@ const PROPHETS = [
     miracle: "Angels visited in human form and the cities were overturned",
     type: "Messenger",
     era: "Jordan Valley",
-    xpReward: 20
+    xpReward: 20,
+    gradient: "from-purple-100 to-rose-100"
   },
   {
     id: 8,
@@ -200,6 +215,7 @@ const PROPHETS = [
     desc: "Son of Ibrahim, helped rebuild the Kaaba, ancestor of Prophet Muhammad ﷺ.",
     fullStory: "Left in the desert as a baby, the Zamzam spring appeared for him. He submitted to sacrifice before a ram was substituted. He helped Ibrahim build the Kaaba.",
     miracles: ["Zamzam water spring", "Ram substituted in sacrifice", "Helped build Kaaba", "Ancestor of Prophet Muhammad ﷺ"],
+    sayings: ["O my father, do as you are commanded. You will find me, if Allah wills, of the steadfast.", "My Lord, make this a secure city and provide its people with fruits."],
     teachings: ["Submission to Allah", "Patience in hardship", "Honoring parents", "Fulfilling promises"],
     verses: ["And when he reached with him [the age of] exertion, he said, 'O my son...' (37:102)"],
     lessons: ["Complete obedience", "Trust Allah in hardships", "Family blessed through faith", "Promises to Allah"],
@@ -213,7 +229,8 @@ const PROPHETS = [
     miracle: "Zamzam water sprang forth in the barren desert",
     type: "Prophet",
     era: "Arabia",
-    xpReward: 20
+    xpReward: 20,
+    gradient: "from-blue-100 to-amber-100"
   },
   {
     id: 9,
@@ -224,6 +241,7 @@ const PROPHETS = [
     desc: "Son of Ibrahim and Sarah, father of Yaqub, ancestor of the Israelites.",
     fullStory: "Born miraculously to elderly parents, Ishaq continued his father's legacy of monotheism and was the father of Yaqub.",
     miracles: ["Born to elderly parents", "Twin sons including a prophet", "Continued prophetic lineage"],
+    sayings: ["Praise be to Allah who has granted me in my old age Ishmael and Isaac.", "I serve the religion of my fathers, Abraham, Isaac, and Jacob."],
     teachings: ["Nothing is impossible for Allah", "Gratitude for children", "Family legacy of faith", "Passing faith to children"],
     verses: ["And We gave him good tidings of Isaac, a prophet from among the righteous. (37:112)"],
     lessons: ["Allah's power over nature", "Patience for children", "Raising righteous children", "Legacy of faith"],
@@ -237,7 +255,8 @@ const PROPHETS = [
     miracle: "Born to elderly parents who were beyond childbearing age",
     type: "Prophet",
     era: "Canaan",
-    xpReward: 20
+    xpReward: 20,
+    gradient: "from-green-100 to-amber-100"
   },
   {
     id: 10,
@@ -248,6 +267,7 @@ const PROPHETS = [
     desc: "Son of Ishaq, father of twelve tribes and Prophet Yusuf, known for beautiful patience.",
     fullStory: "Yaqub showed beautiful patience during the long separation from Yusuf, never losing hope in Allah's mercy.",
     miracles: ["Sight restored by Yusuf's shirt", "Father of twelve tribes", "Beautiful patience for decades"],
+    sayings: ["I only complain of my suffering and grief to Allah, and I know from Allah that which you do not know.", "My sons, go and find out about Joseph and his brother and despair not of relief from Allah."],
     teachings: ["Beautiful patience", "Never lose hope in Allah", "Forgive family", "Trust Allah's wisdom"],
     verses: ["He said, 'I only complain of my suffering and grief to Allah...' (12:86)"],
     lessons: ["Patience in grief", "Never despair of Allah", "Family reconciliation", "Sorrow only to Allah"],
@@ -261,7 +281,8 @@ const PROPHETS = [
     miracle: "His eyesight was restored by Yusuf's shirt",
     type: "Prophet",
     era: "Canaan",
-    xpReward: 20
+    xpReward: 20,
+    gradient: "from-blue-100 to-indigo-100"
   },
   {
     id: 11,
@@ -272,6 +293,7 @@ const PROPHETS = [
     desc: "Known for his beauty, dream interpretation, and rise from slave to minister of Egypt.",
     fullStory: "Betrayed by his brothers, sold as a slave, and falsely imprisoned, Yusuf rose to be a minister of Egypt through his integrity and ability to interpret dreams.",
     miracles: ["Precise dream interpretation", "Rise from slave to minister", "Surviving false accusation"],
+    sayings: ["My Lord, You have given me [something] of sovereignty and taught me of the interpretation of dreams.", "Creator of the heavens and earth, You are my protector in this world and the Hereafter. Cause me to die a Muslim and join me with the righteous."],
     teachings: ["Patience brings elevation", "Forgiveness is powerful", "Trust Allah's plan", "Maintain dignity in trials"],
     verses: ["Indeed, my Lord is Subtle in what He wills... (12:100)"],
     lessons: ["Patience through injustice", "Forgive completely", "Allah's plan unfolds beautifully", "Maintain character in prison"],
@@ -287,7 +309,8 @@ const PROPHETS = [
     miracle: "Interpreting dreams with perfect accuracy",
     type: "Messenger",
     era: "Egypt",
-    xpReward: 30
+    xpReward: 30,
+    gradient: "from-indigo-100 to-purple-100"
   },
   {
     id: 12,
@@ -298,6 +321,7 @@ const PROPHETS = [
     desc: "Tested with loss of wealth, children, and health, yet remained grateful to Allah.",
     fullStory: "Prophet Ayyub lost everything but never complained. He was eventually healed and his blessings were doubled.",
     miracles: ["Patience during extreme trials", "Complete health restoration", "Spring of healing water"],
+    sayings: ["Indeed, adversity has touched me, and you are the most merciful of the merciful.", "I have been touched by distress, but You are the Most Merciful of the merciful."],
     teachings: ["Patience in hardship", "Gratitude in all states", "Complain only to Allah"],
     verses: ["Indeed, We found him patient, an excellent servant... (38:44)"],
     lessons: ["Patience brings reward", "Gratitude despite trials", "Allah tests those He loves"],
@@ -311,7 +335,8 @@ const PROPHETS = [
     miracle: "Complete healing after years of severe illness",
     type: "Prophet",
     era: "Unknown",
-    xpReward: 25
+    xpReward: 25,
+    gradient: "from-emerald-100 to-teal-100"
   },
   {
     id: 13,
@@ -322,6 +347,7 @@ const PROPHETS = [
     desc: "Sent to Madyan, known for his eloquent speech against economic fraud and corruption.",
     fullStory: "Sent to Madyan to preach against cheating in trade. He was known for his eloquent and logical arguments.",
     miracles: ["Eloquent speech and persuasion", "Earthquake punishment on disbelievers"],
+    sayings: ["Give full measure and do not be of those who cause loss.", "And weigh with an even balance."],
     teachings: ["Fair business practices", "Honest weights and measures", "Economic justice"],
     verses: ["And to Madyan [We sent] their brother Shu'ayb... (7:85)"],
     lessons: ["Honesty in business", "Economic fairness", "Don't cheat customers"],
@@ -334,7 +360,8 @@ const PROPHETS = [
     miracle: "Eloquent speech that powerfully conveyed Allah's message",
     type: "Messenger",
     era: "Madyan",
-    xpReward: 20
+    xpReward: 20,
+    gradient: "from-amber-100 to-orange-100"
   },
   {
     id: 14,
@@ -345,6 +372,7 @@ const PROPHETS = [
     desc: "Confronted Pharaoh, parted the Red Sea, received the Torah on Mount Sinai.",
     fullStory: "Prophet Musa was born during Pharaoh's decree of male infanticide. Placed in a basket on the Nile, he was found and raised by the very household he was destined to confront. After exile in Madyan, he received revelation at the Burning Bush. He returned to Egypt with his brother Harun to challenge Pharaoh and lead the Children of Israel to freedom. The parting of the Red Sea remains the most powerful sign of Divine intervention in his mission. He received the Torah on Mount Sinai and is the prophet most mentioned in the Quran.",
     miracles: ["Staff to serpent", "Radiant white hand", "Parting Red Sea", "Twelve springs from rock", "Manna and Salwa"],
+    sayings: ["My Lord, expand for me my breast [with assurance] and ease for me my task.", "Indeed, I am in need of whatever good You would send down to me."],
     teachings: ["Justice against oppression", "Patience in leadership", "Trust Allah in danger", "Speak truth to tyrants"],
     verses: ["Indeed, I am Allah. There is no deity except Me... (20:14)"],
     lessons: ["Courage against tyranny", "Leadership requires patience", "Trust in divine help"],
@@ -360,7 +388,8 @@ const PROPHETS = [
     miracle: "Parting of the Red Sea",
     type: "Messenger",
     era: "Egypt",
-    xpReward: 30
+    xpReward: 30,
+    gradient: "from-blue-200 to-emerald-200"
   },
   {
     id: 15,
@@ -371,6 +400,7 @@ const PROPHETS = [
     desc: "Brother of Musa, known for eloquence, appointed as Musa's assistant and deputy.",
     fullStory: "Harun was appointed by Allah to support Musa due to his eloquent speech. He was a constant companion to Musa.",
     miracles: ["Eloquent speech", "Supported Musa's mission"],
+    sayings: ["O my brother, do not seize [me] by my beard or by my head.", "Indeed, I feared that you would say, 'You caused division among the Children of Israel'."],
     teachings: ["Support your brother in good", "Speak clearly", "Do your best to prevent evil"],
     verses: ["And We granted him out of Our mercy his brother Aaron... (19:53)"],
     lessons: ["Sibling support in faith", "Eloquence in da'wah", "Clear communication"],
@@ -383,7 +413,8 @@ const PROPHETS = [
     miracle: "Eloquent speech granted by Allah",
     type: "Prophet",
     era: "Egypt",
-    xpReward: 20
+    xpReward: 20,
+    gradient: "from-blue-100 to-teal-100"
   },
   {
     id: 16,
@@ -394,6 +425,7 @@ const PROPHETS = [
     desc: "A prophet-king who defeated Goliath, received the Psalms (Zabur), and had mountains and birds praise with him.",
     fullStory: "Prophet Dawud was a young man when he defeated the giant Goliath with a simple sling, securing victory for the Children of Israel. Known for his intense devotion, he would fast every other day and spend the night in prayer. Allah gave him a beautiful voice, and when he sang the Psalms (Zabur), the mountains and birds would join him in praise. He was also a master smith who could soften iron with his hands, creating armor to protect his soldiers. He founded a mighty kingdom that served as a model for righteous rule.",
     miracles: ["Defeating Goliath", "Iron softened for him", "Mountains and birds praising", "Beautiful voice"],
+    sayings: ["My Lord, grant me the love of You, and the love of those whose love will benefit me with You.", "Success is from Allah and His guidance."],
     teachings: ["Justice in judgment", "Humility despite power", "Repentance", "Balance worldly and spiritual"],
     verses: ["And We gave David the Psalms... (17:55)"],
     lessons: ["Humility in power", "Fair judgment", "Sincere repentance"],
@@ -406,7 +438,8 @@ const PROPHETS = [
     miracle: "Iron softened in his hands like clay",
     type: "Messenger",
     era: "Israel",
-    xpReward: 25
+    xpReward: 25,
+    gradient: "from-amber-200 to-yellow-100"
   },
   {
     id: 17,
@@ -417,6 +450,7 @@ const PROPHETS = [
     desc: "Son of Dawud, ruled over humans, jinn, birds, and wind. Could speak to animals.",
     fullStory: "The son of Dawud, Sulayman was a prophet-king famous for his unmatched wisdom and authority. He was given power over the winds, the jinn, and the ability to understand the speech of all animals. His kingdom was unparalleled in history, featuring magnificent architecture built by jinn. Despite his wealth and power, he remained incredibly humble, realizing that everything was a gift from Allah. His journey with the Queen of Sheba (Bilqis) demonstrated his commitment to calling all nations toward the worship of the One Creator.",
     miracles: ["Speaking to animals", "Controlling wind", "Commanding jinn", "Throne transported instantly"],
+    sayings: ["My Lord, enable me to be grateful for Your favor which You have bestowed upon me and upon my parents.", "This is from the favor of my Lord to test me whether I will be grateful or ungrateful."],
     teachings: ["Gratitude for blessings", "Just leadership", "Using power wisely"],
     verses: ["And Solomon inherited David... (27:16)"],
     lessons: ["Power requires gratitude", "Leadership with justice"],
@@ -429,7 +463,8 @@ const PROPHETS = [
     miracle: "Command over jinn, wind, and understanding animal speech",
     type: "Messenger",
     era: "Israel",
-    xpReward: 25
+    xpReward: 25,
+    gradient: "from-amber-100 to-orange-100"
   },
   {
     id: 18,
@@ -440,6 +475,7 @@ const PROPHETS = [
     desc: "Sent to the people of Baalbek who worshipped the idol Ba'al.",
     fullStory: "Sent to Baalbek, Ilyas challenged the worshippers of Ba'al to return to the worship of the one true God.",
     miracles: ["Challenged idol worship", "Zealous preaching", "Raised to heaven"],
+    sayings: ["Will you call upon Ba'al and leave the best of creators?", "Allah is your Lord and the Lord of your first forefathers."],
     teachings: ["Zeal for truth", "Challenge false beliefs", "Pure monotheism"],
     verses: ["And indeed, Elias was from among the messengers... (37:123)"],
     lessons: ["Zeal for Allah's religion", "Challenge false gods", "Pure tawheed"],
@@ -451,7 +487,8 @@ const PROPHETS = [
     miracle: "Raised to heaven",
     type: "Messenger",
     era: "Baalbek",
-    xpReward: 20
+    xpReward: 20,
+    gradient: "from-red-100 to-orange-100"
   },
   {
     id: 19,
@@ -462,6 +499,7 @@ const PROPHETS = [
     desc: "Successor of Ilyas, continued his mission among the Israelites.",
     fullStory: "Al-Yasa continued the work of Ilyas, performing many miracles and guiding the Israelites back to the right path.",
     miracles: ["Healing the sick", "Purifying water"],
+    sayings: ["And indeed they are, to Us, among the chosen and outstanding.", "Success comes only through obedience to Allah."],
     teachings: ["Continue good work", "Faithful service", "Persistent da'wah"],
     verses: ["And [We guided] Elisha... (6:86)"],
     lessons: ["Carry the torch of faith", "Be a faithful successor"],
@@ -473,7 +511,8 @@ const PROPHETS = [
     miracle: "Healing the sick by Allah's permission",
     type: "Prophet",
     era: "Israel",
-    xpReward: 20
+    xpReward: 20,
+    gradient: "from-blue-100 to-indigo-100"
   },
   {
     id: 20,
@@ -484,6 +523,7 @@ const PROPHETS = [
     desc: "Known for his pledge to judge fairly, fast by day, pray by night, and never get angry.",
     fullStory: "He made a pledge to maintain a strict spiritual discipline and judge with absolute fairness, which he fulfilled perfectly.",
     miracles: ["Fulfilled all his pledges", "Controlled his anger perfectly"],
+    sayings: ["I will judge fairly and will not get angry.", "I pledge to serve Allah with all my being."],
     teachings: ["Keep your promises", "Control anger", "Be fair in judgment"],
     verses: ["And remember Dhul-Kifl... (21:85)"],
     lessons: ["Promise-keeping", "Anger management", "Self-discipline"],
@@ -495,7 +535,8 @@ const PROPHETS = [
     miracle: "Perfectly fulfilled all his spiritual pledges",
     type: "Prophet",
     era: "Unknown",
-    xpReward: 15
+    xpReward: 15,
+    gradient: "from-slate-100 to-gray-200"
   },
   {
     id: 21,
@@ -506,6 +547,7 @@ const PROPHETS = [
     desc: "Swallowed by a whale, saved through repentance and the dua of distress.",
     fullStory: "Prophet Yunus was sent to the city of Nineveh. When his people initially rejected him, he left in anger without permission from Allah. While at sea, he was thrown overboard and swallowed by a massive whale. In the darkness of the whale's belly, he called out the famous words: 'There is no god but You; Glory be to You! Indeed, I was among the wrongdoers.' Allah accepted his sincere repentance, and he was safely released. He returned to Nineveh to find that his entire people had accepted Islam—the only nation to avoid punishment through mass repentance.",
     miracles: ["Surviving inside whale", "Repentance accepted"],
+    sayings: ["There is no deity except You; exalted are You. Indeed, I have been of the wrongdoers.", "Truly, my success is only through Allah."],
     teachings: ["Never lose hope", "Repentance is powerful", "The dua of Yunus"],
     verses: ["And [mention] the man of the fish... (21:87)"],
     lessons: ["Never despair of Allah", "Repent sincerely"],
@@ -518,7 +560,8 @@ const PROPHETS = [
     miracle: "Survived inside a whale for several days",
     type: "Messenger",
     era: "Nineveh",
-    xpReward: 25
+    xpReward: 25,
+    gradient: "from-blue-200 to-slate-200"
   },
   {
     id: 22,
@@ -529,6 +572,7 @@ const PROPHETS = [
     desc: "Guardian of Maryam, prayed for a son in old age, blessed with Yahya (John).",
     fullStory: "An elderly man who never lost hope for a child, Zakariya was blessed with Yahya after his sincere prayers.",
     miracles: ["Out-of-season fruits", "Silence as sign", "Son in old age"],
+    sayings: ["My Lord, do not leave me alone [with no heir], while you are the best of inheritors.", "O my Lord, how can I have a boy while my wife has been barren and I have reached extreme old age?"],
     teachings: ["Never give up on dua", "Care for orphans", "Trust Allah's timing"],
     verses: ["At that, Zechariah called upon his Lord... (3:38)"],
     lessons: ["Dua is never wasted", "Prayer brings miracles"],
@@ -540,7 +584,8 @@ const PROPHETS = [
     miracle: "Son born at an extremely old age",
     type: "Prophet",
     era: "Jerusalem",
-    xpReward: 20
+    xpReward: 20,
+    gradient: "from-amber-100 to-yellow-100"
   },
   {
     id: 23,
@@ -551,6 +596,7 @@ const PROPHETS = [
     desc: "Son of Zakariyya, known for wisdom, purity, and devotion from childhood.",
     fullStory: "Yahya was given wisdom as a child and lived a life of extreme purity and devotion, confirming the message of Isa.",
     miracles: ["Wisdom in childhood", "Extreme piety"],
+    sayings: ["O John, take the Scripture with determination.", "And peace be upon him the day he was born and the day he dies and the day he is raised alive."],
     teachings: ["Purity of heart", "Wisdom from youth", "Ascetic lifestyle"],
     verses: ["And We gave him wisdom [while yet] a boy. (19:12)"],
     lessons: ["Start righteousness young", "Devotion to Allah"],
@@ -562,7 +608,8 @@ const PROPHETS = [
     miracle: "Given wisdom as a child",
     type: "Prophet",
     era: "Jerusalem",
-    xpReward: 20
+    xpReward: 20,
+    gradient: "from-blue-100 to-cyan-100"
   },
   {
     id: 24,
@@ -573,6 +620,7 @@ const PROPHETS = [
     desc: "Born miraculously to Maryam, performed great miracles, raised to heaven, will return.",
     fullStory: "Born miraculously to Maryam (AS) without a father, Isa spoke from the cradle to prove his mother's innocence and brought the Gospel (Injil) to the Children of Israel. He healed the blind, cured lepers, and raised the dead by Allah's permission. He was a simple, wandering prophet who focused on the heart's sincerity. When his enemies conspired against him, Allah raised him to heaven alive, where he remains until his destined return to Earth to unite believers and establish justice.",
     miracles: ["Born without father", "Speaking in cradle", "Healing blind and lepers", "Raising dead"],
+    sayings: ["Indeed, I am the servant of Allah. He has given me the Scripture and made me a prophet.", "Indeed, Allah is my Lord and your Lord, so worship Him. That is a straight path."],
     teachings: ["Worship Allah alone", "Humility", "Compassion", "Forgiveness"],
     verses: ["And [make him] a messenger to the Children of Israel... (3:49)"],
     lessons: ["Miracles are from Allah", "Compassion for all"],
@@ -585,7 +633,8 @@ const PROPHETS = [
     miracle: "Born without a father, speaking in the cradle, healing the sick",
     type: "Messenger",
     era: "Jerusalem",
-    xpReward: 30
+    xpReward: 30,
+    gradient: "from-teal-100 to-blue-100"
   },
   {
     id: 25,
@@ -596,6 +645,7 @@ const PROPHETS = [
     desc: "The final messenger who brought the Quran and completed the message of Islam for all humanity.",
     fullStory: "Born in the year of the Elephant in Mecca, Muhammad ﷺ was orphaned at a young age and became known as Al-Amin (The Trustworthy). At age 40, he received the first revelation in the Cave of Hira. For 23 years, he preached the message of pure monotheism, facing extreme persecution but responding with mercy. His migration (Hijrah) to Medina marked the birth of a new society based on justice. His legacy is the Quran and his Sunnah, which continue to guide billions. He is the 'Mercy to the Worlds' whose character was the Quran itself.",
     miracles: ["The Quran", "Splitting of the moon", "Isra and Mi'raj", "Water from fingers"],
+    sayings: ["The best of you are those who have the best character.", "Seek knowledge from the cradle to the grave.", "Actions are but by intentions."],
     teachings: ["Complete monotheism", "Mercy to all creation", "Justice and equality", "Good character"],
     verses: ["And We have not sent you, [O Muhammad], except as a mercy to the worlds. (21:107)"],
     lessons: ["Follow the perfect example", "Mercy to all", "Stand for justice"],
@@ -609,7 +659,8 @@ const PROPHETS = [
     miracle: "The Holy Quran, splitting of the moon, Isra and Mi'raj",
     type: "Messenger",
     era: "Arabia",
-    xpReward: 50
+    xpReward: 50,
+    gradient: "from-emerald-200 to-green-100"
   }
 ];
 
@@ -826,52 +877,11 @@ const BASE_TRAITS = [
   { name: 'Trusting', icon: '🤝', value: 80, color: 'bg-indigo-500' }
 ];
 
-// ==================== INTERESTS DATA ====================
-const INTERESTS = [
-  { 
-    title: 'Spiritual Archetype', 
-    value: 'The Silent Seeker', 
-    desc: 'You process wisdom in quiet moments. Your strength lies in observation and internal reflection.',
-    icon: <Sparkles className="text-amber-500" />,
-    color: 'bg-amber-50 text-amber-700 border-amber-100'
-  },
-  { 
-    title: 'Peak Alignment', 
-    value: 'Fajr Resonance', 
-    desc: 'Your spiritual frequency peaks during the dawn hours. Most reflections are recorded then.',
-    icon: <Sunrise className="text-emerald-500" />,
-    color: 'bg-emerald-50 text-emerald-700 border-emerald-100'
-  },
-  { 
-    title: 'Dominant Theme', 
-    value: 'Divine Mercy', 
-    desc: 'You are naturally drawn to verses describing Rahma. It forms the majority of your bookmarked content.',
-    icon: <Heart className="text-rose-500" />,
-    color: 'bg-rose-50 text-rose-700 border-rose-100'
-  },
-  { 
-    title: 'Quranic Resonance', 
-    value: 'Surah Al-Waqi\'a', 
-    desc: 'You have a deep connection with this Surah. Frequent interaction detected in your reading patterns.',
-    icon: <Star className="text-cyan-500" />,
-    color: 'bg-cyan-50 text-cyan-700 border-cyan-100'
-  },
-  { 
-    title: 'Growth Pattern', 
-    value: 'Gratitude Surge', 
-    desc: 'A notable increase in gratitude markers observed recently. Spiritual expansion in progress.',
-    icon: <TrendingUp className="text-indigo-500" />,
-    color: 'bg-indigo-50 text-indigo-700 border-indigo-100'
-  }
-];
-
 // ==================== CONSTANTS ====================
 const XP_PER_LEVEL = 100;
 const MAX_LEVEL = 50;
 
 // ==================== HELPERS ====================
-const calculateLevel = (xp) => Math.min(MAX_LEVEL, Math.floor(xp / XP_PER_LEVEL) + 1);
-const calculateXPProgress = (xp) => (xp % XP_PER_LEVEL) / XP_PER_LEVEL * 100;
 const getLevelTitle = (level) => {
   if (level >= 50) return 'Wali';
   if (level >= 40) return 'Arif';
@@ -882,408 +892,51 @@ const getLevelTitle = (level) => {
   return 'Beginner';
 };
 
-// ==================== SUB-COMPONENTS ====================
+// ==================== PROPHET CARD COMPONENT ====================
 const ProphetCard = ({ prophet, onClick, index }) => (
-  <motion.div 
-    initial={{ opacity: 0, y: 15 }} 
-    animate={{ opacity: 1, y: 0 }} 
-    transition={{ delay: index * 0.05 }}
+  <motion.button
+    layout
+    initial={{ opacity: 0, scale: 0.9 }}
+    animate={{ opacity: 1, scale: 1 }}
+    transition={{ delay: (index % 6) * 0.05, duration: 0.5 }}
+    whileHover={{ y: -10, transition: { duration: 0.2 } }}
     onClick={() => onClick(prophet)} 
-    className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 group cursor-pointer relative overflow-hidden"
+    className="group text-left bg-white p-8 rounded-[3rem] border border-emerald-100/50 shadow-sm hover:shadow-xl transition-all flex flex-col h-full relative overflow-hidden active:scale-95"
   >
-    <div className="relative z-10 flex items-center gap-6 text-left">
-      <div className="w-20 h-20 rounded-2xl bg-emerald-950 text-white flex items-center justify-center text-3xl shadow-lg group-hover:rotate-12 transition-all duration-500 border-2 border-emerald-800 shrink-0">
-        {prophet.icon}
+    <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${prophet.gradient} opacity-20 blur-3xl -mr-16 -mt-16 group-hover:opacity-40 transition-opacity`} />
+    
+    <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${prophet.gradient} mb-6 flex items-center justify-center text-white shadow-lg group-hover:rotate-6 transition-transform text-3xl`}>
+      {prophet.icon}
+    </div>
+    
+    <div className="flex-1 space-y-1">
+      <div className="flex items-center gap-2 mb-1">
+        <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">
+          {prophet.type === 'Messenger' ? 'Rasul' : 'Nabi'}
+        </span>
+        <span className="w-1 h-1 bg-emerald-200 rounded-full" />
+        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{prophet.era}</span>
       </div>
-      <div className="space-y-1 min-w-0">
-        <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.2em]">{prophet.title}</span>
-        <h3 className="text-2xl md:text-3xl font-black text-gray-900 group-hover:text-emerald-600 transition-colors uppercase italic tracking-tight">Prophet {prophet.name}</h3>
-        <p className="text-sm text-gray-400 font-mono">{prophet.nameAr}</p>
+      <h3 className="font-black text-3xl text-gray-900 tracking-tighter group-hover:text-emerald-600 transition-colors uppercase italic">
+        {prophet.name}
+      </h3>
+      <p className="text-sm text-gray-400 font-serif italic line-clamp-2 mt-2 leading-relaxed">
+        "{prophet.desc}"
+      </p>
+    </div>
+
+    <div className="mt-8 flex items-end justify-between">
+      <p className="text-emerald-100 font-arabic text-3xl leading-none">{prophet.nameAr}</p>
+      <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition-all shadow-sm">
+        <ChevronRight size={20} />
       </div>
     </div>
-    <p className="text-gray-500 text-base mt-6 leading-relaxed font-serif italic line-clamp-2">{prophet.desc}</p>
-    <div className="mt-6 flex items-center gap-2 text-emerald-600 font-black text-[10px] uppercase tracking-widest group-hover:gap-4 transition-all">
-      <span>View Archive</span> <ChevronRight size={14} />
+
+    <div className="absolute top-6 right-6 flex items-center gap-1.5 px-3 py-1 bg-white/80 backdrop-blur-sm rounded-full border border-emerald-50 shadow-sm">
+      <Zap size={10} className="text-amber-500 fill-amber-500" />
+      <span className="text-[8px] font-black text-emerald-700">{prophet.xpReward} XP</span>
     </div>
-  </motion.div>
-);
-
-// Prophet Modal Component
-const ProphetModal = ({ prophet, onClose, onIntegrate }) => {
-  const [activeTab, setActiveTab] = useState('story');
-  const [isIntegrating, setIsIntegrating] = useState(false);
-
-  if (!prophet) return null;
-
-  const tabs = [
-    { id: 'story', label: 'Story', icon: BookOpen, color: 'emerald' },
-    { id: 'miracles', label: 'Miracles', icon: Star, color: 'amber' },
-    { id: 'teachings', label: 'Teachings', icon: Compass, color: 'blue' },
-    { id: 'timeline', label: 'Timeline', icon: Clock, color: 'purple' }
-  ];
-
-  const getTabColor = (tabColor) => {
-    const colors = {
-      emerald: 'border-emerald-200 bg-emerald-50 text-emerald-700',
-      amber: 'border-amber-200 bg-amber-50 text-amber-700',
-      blue: 'border-blue-200 bg-blue-50 text-blue-700',
-      purple: 'border-purple-200 bg-purple-50 text-purple-700'
-    };
-    return colors[tabColor] || colors.emerald;
-  };
-
-  const handleIntegrate = async () => {
-    setIsIntegrating(true);
-    await onIntegrate(prophet);
-    setIsIntegrating(false);
-  };
-
-  return (
-    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 md:p-8">
-      <motion.div 
-        initial={{ opacity: 0 }} 
-        animate={{ opacity: 1 }} 
-        exit={{ opacity: 0 }} 
-        className="absolute inset-0 bg-emerald-950/60 backdrop-blur-xl" 
-        onClick={onClose} 
-      />
-      <motion.div 
-        initial={{ scale: 0.9, opacity: 0, y: 30 }} 
-        animate={{ scale: 1, opacity: 1, y: 0 }} 
-        exit={{ scale: 0.9, opacity: 0, y: 30 }} 
-        className="bg-white max-w-4xl w-full rounded-[2rem] shadow-2xl relative overflow-hidden flex flex-col max-h-[90vh]"
-      >
-        <div className="relative bg-gradient-to-r from-emerald-800 to-emerald-950 text-white p-8">
-          <button onClick={onClose} className="absolute top-6 right-6 p-2 bg-white/10 hover:bg-white/20 rounded-xl transition-all z-10">
-            <X size={20} />
-          </button>
-          
-          <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
-            <div className="w-28 h-28 rounded-3xl bg-white/10 backdrop-blur-md flex items-center justify-center text-6xl border-2 border-white/20 shadow-xl">
-              {prophet.icon}
-            </div>
-            <div className="flex-1">
-              <div className="flex flex-wrap items-center gap-3 mb-2">
-                <span className="px-3 py-1 bg-white/20 rounded-full text-[11px] font-black uppercase tracking-wider">
-                  {prophet.type}
-                </span>
-                <span className="px-3 py-1 bg-emerald-500/30 rounded-full text-[11px] font-black uppercase tracking-wider">
-                  +{prophet.xpReward} XP
-                </span>
-              </div>
-              <h2 className="text-4xl md:text-6xl font-black tracking-tighter">
-                Prophet {prophet.name}
-              </h2>
-              <p className="text-3xl font-arabic text-emerald-200 mt-1">{prophet.nameAr}</p>
-              <p className="text-base text-emerald-200/80 mt-2">{prophet.title}</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex gap-2 p-4 bg-gray-50 border-b border-gray-100 sticky top-0 z-10 overflow-x-auto">
-          {tabs.map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all text-[11px] font-black uppercase tracking-wider whitespace-nowrap ${
-                activeTab === tab.id
-                  ? `bg-white shadow-md border ${getTabColor(tab.color)}`
-                  : 'text-gray-400 hover:text-gray-600 hover:bg-white/50'
-              }`}
-            >
-              <tab.icon size={15} />
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        <div className="flex-1 overflow-y-auto p-6 md:p-8 custom-scrollbar">
-          {activeTab === 'story' && (
-            <div className="space-y-6">
-              <div>
-                <h3 className="text-sm font-black uppercase tracking-wider text-emerald-600 mb-3 flex items-center gap-2">
-                  <BookOpen size={16} /> Full Story
-                </h3>
-                <div className="bg-emerald-50/30 rounded-2xl p-6 border border-emerald-100">
-                  <p className="text-gray-700 text-base leading-relaxed">
-                    {prophet.fullStory || prophet.desc}
-                  </p>
-                </div>
-              </div>
-
-              {prophet.verses && prophet.verses.length > 0 && (
-                <div>
-                  <h3 className="text-sm font-black uppercase tracking-wider text-emerald-600 mb-3 flex items-center gap-2">
-                    <BookOpen size={16} /> Quranic References
-                  </h3>
-                  <div className="space-y-2">
-                    {prophet.verses.map((verse, idx) => (
-                      <div key={idx} className="bg-amber-50/30 rounded-xl p-4 border border-amber-100">
-                        <p className="text-amber-800 text-base italic">"{verse}"</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {prophet.lessons && prophet.lessons.length > 0 && (
-                <div>
-                  <h3 className="text-sm font-black uppercase tracking-wider text-emerald-600 mb-3">Key Lessons</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {prophet.lessons.map((lesson, idx) => (
-                      <span key={idx} className="px-3 py-1.5 bg-purple-50 rounded-full text-sm text-purple-700 border border-purple-100 font-medium">
-                        {lesson}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {activeTab === 'miracles' && (
-            <div className="space-y-4">
-              <h3 className="text-sm font-black uppercase tracking-wider text-amber-600 mb-4 flex items-center gap-2">
-                <Star size={16} /> Divine Miracles
-              </h3>
-              <div className="grid gap-3">
-                {prophet.miracles?.map((miracle, idx) => (
-                  <div key={idx} className="bg-amber-50 rounded-xl p-4 border border-amber-100 flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600 shrink-0">
-                      <Star size={16} />
-                    </div>
-                    <p className="text-amber-900 text-base font-medium flex-1">{miracle}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'teachings' && (
-            <div className="space-y-4">
-              <h3 className="text-sm font-black uppercase tracking-wider text-blue-600 mb-4 flex items-center gap-2">
-                <Compass size={16} /> Wisdom Teachings
-              </h3>
-              <div className="grid gap-3">
-                {prophet.teachings?.map((teaching, idx) => (
-                  <div key={idx} className="bg-blue-50 rounded-xl p-4 border border-blue-100 flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600 shrink-0">
-                      💡
-                    </div>
-                    <p className="text-blue-900 text-base font-medium flex-1">{teaching}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'timeline' && (
-            <div className="space-y-4">
-              <h3 className="text-sm font-black uppercase tracking-wider text-purple-600 mb-4 flex items-center gap-2">
-                <Clock size={16} /> Life Timeline
-              </h3>
-              <div className="relative pl-6 space-y-4 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-purple-200">
-                {prophet.timeline?.map((event, idx) => (
-                  <div key={idx} className="relative">
-                    <div className="absolute -left-6 top-1 w-3 h-3 rounded-full bg-purple-500" />
-                    <div className="bg-purple-50 rounded-xl p-3 border border-purple-100">
-                      <span className="text-sm font-bold text-purple-600">{event.year}</span>
-                      <p className="text-gray-700 text-base mt-1">{event.event}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="p-6 border-t border-gray-100 bg-gray-50/50">
-          <div className="bg-gradient-to-r from-emerald-50 to-teal-50 p-5 rounded-xl border border-emerald-100 mb-4">
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-emerald-600 shrink-0 shadow-sm">
-                <Zap size={18} />
-              </div>
-              <div>
-                <h4 className="text-[10px] font-black uppercase tracking-wider text-emerald-600 mb-1">Soul Integration Lesson</h4>
-                <p className="text-base font-bold text-emerald-900 leading-relaxed">{prophet.lesson}</p>
-                <p className="text-sm text-emerald-600 mt-2 flex items-center gap-1">
-                  <Sparkles size={14} /> +{prophet.xpReward} XP upon integration
-                </p>
-              </div>
-            </div>
-          </div>
-          
-          <button 
-            onClick={handleIntegrate}
-            disabled={isIntegrating}
-            className="w-full py-4 bg-emerald-600 text-white rounded-xl font-black uppercase tracking-wider text-base hover:bg-emerald-700 transition-all shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-          >
-            {isIntegrating ? (
-              <><RefreshCw className="animate-spin" size={18} /> Integrating Wisdom...</>
-            ) : (
-              <>✨ Integrate Wisdom (+{prophet.xpReward} XP) ✨</>
-            )}
-          </button>
-          <p className="text-center text-xs text-gray-400 mt-3">
-            Peace and blessings of Allah be upon Prophet {prophet.name}
-          </p>
-        </div>
-      </motion.div>
-    </div>
-  );
-};
-
-// Prayer Modal Component
-const PrayerModal = ({ prayer, onClose }) => (
-  <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 md:p-8">
-    <motion.div 
-      initial={{ opacity: 0 }} 
-      animate={{ opacity: 1 }} 
-      exit={{ opacity: 0 }} 
-      className="absolute inset-0 bg-emerald-950/60 backdrop-blur-xl" 
-      onClick={onClose} 
-    />
-    <motion.div 
-      initial={{ scale: 0.9, opacity: 0, y: 30 }} 
-      animate={{ scale: 1, opacity: 1, y: 0 }} 
-      exit={{ scale: 0.9, opacity: 0, y: 30 }} 
-      className="bg-white max-w-2xl w-full rounded-[2rem] shadow-2xl relative overflow-hidden"
-    >
-      <div className={`relative p-8 text-white ${prayer.name === 'Fajr' ? 'bg-gradient-to-br from-amber-600 to-orange-700' : 
-        prayer.name === 'Dhuhr' ? 'bg-gradient-to-br from-orange-500 to-yellow-600' :
-        prayer.name === 'Asr' ? 'bg-gradient-to-br from-blue-500 to-indigo-600' :
-        prayer.name === 'Maghrib' ? 'bg-gradient-to-br from-indigo-600 to-purple-700' :
-        'bg-gradient-to-br from-indigo-800 to-purple-900'}`}>
-        <button onClick={onClose} className="absolute top-6 right-6 p-2 bg-white/10 hover:bg-white/20 rounded-xl transition-all">
-          <X size={20} />
-        </button>
-        <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-3xl">
-            {prayer.icon}
-          </div>
-          <div>
-            <h2 className="text-4xl font-black">{prayer.name}</h2>
-            <p className="text-3xl font-arabic opacity-90">{prayer.nameAr}</p>
-            <p className="text-base opacity-80 mt-1">{prayer.time} • {prayer.rakat} Rak'at</p>
-          </div>
-        </div>
-      </div>
-      
-      <div className="p-8 space-y-6">
-        <p className="text-gray-600 text-base leading-relaxed">{prayer.description}</p>
-        
-        <div>
-          <h3 className="text-sm font-black uppercase tracking-wider text-emerald-600 mb-3">Spiritual Benefits</h3>
-          <div className="flex flex-wrap gap-2">
-            {prayer.benefits.map((benefit, idx) => (
-              <span key={idx} className="px-3 py-1.5 bg-emerald-50 rounded-full text-sm text-emerald-700">
-                {benefit}
-              </span>
-            ))}
-          </div>
-        </div>
-        
-        <div>
-          <h3 className="text-sm font-black uppercase tracking-wider text-emerald-600 mb-3">Recommended Surahs</h3>
-          <div className="flex flex-wrap gap-2">
-            {prayer.recommendedSurahs.map((surah, idx) => (
-              <span key={idx} className="px-3 py-1.5 bg-amber-50 rounded-full text-sm text-amber-700">
-                {surah}
-              </span>
-            ))}
-          </div>
-        </div>
-        
-        <div className="bg-gray-50 rounded-xl p-4">
-          <h3 className="text-sm font-black uppercase tracking-wider text-emerald-600 mb-2">Prophetic Saying</h3>
-          <p className="text-gray-600 text-base italic">"{prayer.hadith}"</p>
-        </div>
-        
-        <div className="bg-purple-50 rounded-xl p-4">
-          <h3 className="text-sm font-black uppercase tracking-wider text-purple-600 mb-2">Spiritual Significance</h3>
-          <p className="text-purple-800 text-base">{prayer.spiritualSignificance}</p>
-        </div>
-      </div>
-    </motion.div>
-  </div>
-);
-
-// Event Modal Component
-const EventModal = ({ event, onClose, onIntegrate, isIntegrating }) => (
-  <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 md:p-8">
-    <motion.div 
-      initial={{ opacity: 0 }} 
-      animate={{ opacity: 1 }} 
-      exit={{ opacity: 0 }} 
-      className="absolute inset-0 bg-emerald-950/60 backdrop-blur-xl" 
-      onClick={onClose} 
-    />
-    <motion.div 
-      initial={{ scale: 0.9, opacity: 0, y: 30 }} 
-      animate={{ scale: 1, opacity: 1, y: 0 }} 
-      exit={{ scale: 0.9, opacity: 0, y: 30 }} 
-      className="bg-white max-w-2xl w-full rounded-[2rem] shadow-2xl relative overflow-hidden"
-    >
-      <div className="relative bg-gradient-to-r from-emerald-700 to-teal-700 text-white p-8">
-        <button onClick={onClose} className="absolute top-6 right-6 p-2 bg-white/10 hover:bg-white/20 rounded-xl transition-all">
-          <X size={20} />
-        </button>
-        <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-3xl">
-            {event.icon}
-          </div>
-          <div>
-            <h2 className="text-4xl font-black">{event.name}</h2>
-            <p className="text-3xl font-arabic opacity-90">{event.nameAr}</p>
-            <p className="text-base opacity-80 mt-1">{event.month}</p>
-          </div>
-        </div>
-      </div>
-      
-      <div className="p-8 space-y-6">
-        <p className="text-gray-600 text-base leading-relaxed">{event.description}</p>
-        
-        <div>
-          <h3 className="text-sm font-black uppercase tracking-wider text-emerald-600 mb-3">Practices</h3>
-          <div className="flex flex-wrap gap-2">
-            {event.practices.map((practice, idx) => (
-              <span key={idx} className="px-3 py-1.5 bg-emerald-50 rounded-full text-sm text-emerald-700">
-                {practice}
-              </span>
-            ))}
-          </div>
-        </div>
-        
-        <div>
-          <h3 className="text-sm font-black uppercase tracking-wider text-amber-600 mb-3">Virtues</h3>
-          <div className="flex flex-wrap gap-2">
-            {event.virtues.map((virtue, idx) => (
-              <span key={idx} className="px-3 py-1.5 bg-amber-50 rounded-full text-sm text-amber-700">
-                {virtue}
-              </span>
-            ))}
-          </div>
-        </div>
-        
-        <div className="bg-gray-50 rounded-xl p-4">
-          <h3 className="text-sm font-black uppercase tracking-wider text-emerald-600 mb-2">Prophetic Saying</h3>
-          <p className="text-gray-600 text-base italic">"{event.hadith}"</p>
-        </div>
-        
-        <button 
-          onClick={() => onIntegrate(event)}
-          disabled={isIntegrating}
-          className="w-full py-4 bg-emerald-600 text-white rounded-xl font-black uppercase tracking-wider text-base hover:bg-emerald-700 transition-all shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-        >
-          {isIntegrating ? (
-            <><RefreshCw className="animate-spin" size={18} /> Participating...</>
-          ) : (
-            <>✨ Participate & Earn +{event.xpReward} XP ✨</>
-          )}
-        </button>
-      </div>
-    </motion.div>
-  </div>
+  </motion.button>
 );
 
 // ==================== MAIN COMPONENT ====================
@@ -1314,11 +967,9 @@ export default function SpiritualDNA() {
 
   const allProphets = PROPHETS;
 
-  // Get unique eras and types for filters
   const eras = ['All', ...new Set(allProphets.map(p => p.era).filter(Boolean))];
   const types = ['All', ...new Set(allProphets.map(p => p.type).filter(Boolean))];
 
-  // Filter prophets
   const filteredProphets = allProphets.filter(prophet => {
     const matchesSearch = searchTerm === '' || 
       prophet.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -1329,13 +980,14 @@ export default function SpiritualDNA() {
     return matchesSearch && matchesEra && matchesType;
   });
 
-  // Calculate traits with dynamic patience value from userData
   const traits = BASE_TRAITS.map(trait => {
     if (trait.name === 'Patient') {
       return { ...trait, value: Math.min(100, (patienceLevel || 1) * 10 + 30) };
     }
     return trait;
   });
+
+  const handleCloseDetail = () => setSelectedProphet(null);
 
   const handleIntegrateWisdom = async (prophet) => {
     try {
@@ -1347,31 +999,10 @@ export default function SpiritualDNA() {
           newLevel: result.newLevel,
           title: result.newTitle
         });
-        toast.success(
-          `🎉 LEVEL UP! You've reached ${result.newTitle} Level ${result.newLevel}! 🎉`,
-          { 
-            icon: '🏆', 
-            duration: 5000,
-            style: {
-              borderRadius: '2rem',
-              background: 'linear-gradient(135deg, #064e3b, #047857)',
-              color: '#d1fae5',
-              fontWeight: 'bold'
-            }
-          }
-        );
-        
+        toast.success(`🎉 LEVEL UP! You've reached ${result.newTitle} Level ${result.newLevel}! 🎉`, { icon: '🏆' });
         setTimeout(() => setLevelUpMessage(null), 5000);
       } else {
-        toast.success(`✨ Wisdom of Prophet ${prophet.name} integrated! +${prophet.xpReward} XP`, {
-          icon: '🧬',
-          style: {
-            borderRadius: '2rem',
-            background: '#064e3b',
-            color: '#d1fae5',
-            fontWeight: 'bold'
-          }
-        });
+        toast.success(`✨ Wisdom of Prophet ${prophet.name} integrated! +${prophet.xpReward} XP`, { icon: '🧬' });
       }
       setSelectedProphet(null);
     } catch (error) {
@@ -1382,15 +1013,7 @@ export default function SpiritualDNA() {
   const handleIntegrateEvent = async (event) => {
     setIntegratingEvent(event.id);
     await new Promise(resolve => setTimeout(resolve, 1000));
-    toast.success(`✨ You've participated in ${event.name}! +${event.xpReward} XP ✨`, {
-      icon: '🕌',
-      style: {
-        borderRadius: '2rem',
-        background: '#064e3b',
-        color: '#d1fae5',
-        fontWeight: 'bold'
-      }
-    });
+    toast.success(`✨ You've participated in ${event.name}! +${event.xpReward} XP ✨`, { icon: '🕌' });
     setSelectedEvent(null);
     setIntegratingEvent(null);
   };
@@ -1398,37 +1021,16 @@ export default function SpiritualDNA() {
   const handleRefreshTraits = async () => {
     try {
       const result = await addTraitsRefreshXP();
-      
       if (result?.leveledUp) {
         setLevelUpMessage({
           oldLevel: result.level - 1,
           newLevel: result.newLevel,
           title: result.newTitle
         });
-        toast.success(
-          `🎉 LEVEL UP! You've reached ${result.newTitle} Level ${result.newLevel}! 🎉`,
-          { 
-            icon: '🏆', 
-            duration: 5000,
-            style: {
-              borderRadius: '2rem',
-              background: 'linear-gradient(135deg, #064e3b, #047857)',
-              color: '#d1fae5',
-              fontWeight: 'bold'
-            }
-          }
-        );
+        toast.success(`🎉 LEVEL UP! You've reached ${result.newTitle} Level ${result.newLevel}! 🎉`, { icon: '🏆' });
         setTimeout(() => setLevelUpMessage(null), 5000);
       } else {
-        toast.success('🔄 Spiritual traits refreshed! +5 XP', {
-          icon: '✨',
-          style: {
-            borderRadius: '2rem',
-            background: '#064e3b',
-            color: '#d1fae5',
-            fontWeight: 'bold'
-          }
-        });
+        toast.success('🔄 Spiritual traits refreshed! +5 XP', { icon: '✨' });
       }
     } catch (error) {
       toast.error('Failed to refresh traits.');
@@ -1643,107 +1245,312 @@ export default function SpiritualDNA() {
           </motion.div>
         )}
 
-        {/* Prophets Section */}
-        {activeSection === 'prophets' && (
-          <motion.div 
-            key="prophets" 
-            initial={{ opacity: 0, y: 30 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            exit={{ opacity: 0, y: -30 }}
-            className="space-y-8"
-          >
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-[3rem] p-10 text-center border border-emerald-100"
+       {/* PROPHETS SECTION */}
+{activeSection === 'prophets' && (
+  <motion.div 
+    key="prophets" 
+    initial={{ opacity: 0, y: 20 }} 
+    animate={{ opacity: 1, y: 0 }} 
+    exit={{ opacity: 0, y: -20 }}
+    className="space-y-6"
+  >
+    {!selectedProphet ? (
+      <>
+        <div className="text-center">
+          <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tighter">
+            STORIES OF <span className="text-emerald-500 font-serif italic">PROPHETS</span>
+          </h1>
+          <p className="text-gray-400 text-sm mt-2">25 light-bearers who shaped humanity's spiritual path</p>
+        </div>
+
+        {/* Search and Filter */}
+        <div className="flex flex-col md:flex-row gap-3 items-center justify-between">
+          <div className="relative w-full md:w-80">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+            <input
+              type="text"
+              placeholder="Search prophets..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-emerald-300 focus:ring-1 focus:ring-emerald-100 transition"
+            />
+          </div>
+          
+          <div className="flex gap-2">
+            <select
+              value={selectedEra}
+              onChange={(e) => setSelectedEra(e.target.value)}
+              className="px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-bold text-gray-600 focus:outline-none focus:border-emerald-300 cursor-pointer"
             >
-              <div className="text-6xl mb-4">📖</div>
-              <h2 className="text-4xl font-black text-gray-900 mb-3">Stories of the Prophets</h2>
-              <p className="text-gray-600 text-base max-w-xl mx-auto">Discover the inspiring lives of all 25 prophets mentioned in the Quran. Peace be upon them all.</p>
-              <p className="text-emerald-600 text-sm mt-3 font-bold">✨ Each story gives +15-30 XP</p>
-            </motion.div>
+              {eras.map(era => (
+                <option key={era} value={era}>{era}</option>
+              ))}
+            </select>
+            
+            <select
+              value={selectedType}
+              onChange={(e) => setSelectedType(e.target.value)}
+              className="px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-bold text-gray-600 focus:outline-none focus:border-emerald-300 cursor-pointer"
+            >
+              {types.map(type => (
+                <option key={type} value={type}>{type}</option>
+              ))}
+            </select>
+            
+            <button
+              onClick={() => {
+                setSearchTerm('');
+                setSelectedEra('All');
+                setSelectedType('All');
+              }}
+              className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-500 hover:bg-gray-100 transition"
+            >
+              Reset
+            </button>
+          </div>
+        </div>
 
-            <div className="flex flex-wrap gap-4 items-center justify-between">
-              <div className="flex-1 min-w-[200px] relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                <input
-                  type="text"
-                  placeholder="Search prophets by name..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-2xl text-base focus:outline-none focus:border-emerald-300 focus:ring-2 focus:ring-emerald-100 transition"
-                />
-              </div>
-              
-              <div className="flex gap-2 flex-wrap">
-                <select
-                  value={selectedEra}
-                  onChange={(e) => setSelectedEra(e.target.value)}
-                  className="px-4 py-3 bg-white border border-gray-200 rounded-2xl text-sm font-bold text-gray-600 focus:outline-none focus:border-emerald-300 cursor-pointer"
-                >
-                  {eras.map(era => (
-                    <option key={era} value={era}>{era}</option>
-                  ))}
-                </select>
+        {/* Results Count */}
+        <div className="text-right">
+          <p className="text-xs text-gray-400">{filteredProphets.length} prophets found</p>
+        </div>
+
+        {/* PROPHETS VERTICAL LIST - TOP SE START HOGI */}
+        <div className="flex flex-col gap-4">
+          {filteredProphets.map((prophet, i) => (
+            <motion.button
+              key={prophet.id}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: i * 0.02, duration: 0.3 }}
+              whileHover={{ scale: 1.01 }}
+              onClick={() => setSelectedProphet(prophet)}
+              className="group w-full text-left bg-white p-4 rounded-xl border border-emerald-100/50 shadow-sm hover:shadow-md transition-all flex items-center justify-between"
+            >
+              <div className="flex items-center gap-4 flex-1">
+                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${prophet.gradient} flex items-center justify-center text-white shadow-md text-xl`}>
+                  {prophet.icon}
+                </div>
                 
-                <select
-                  value={selectedType}
-                  onChange={(e) => setSelectedType(e.target.value)}
-                  className="px-4 py-3 bg-white border border-gray-200 rounded-2xl text-sm font-bold text-gray-600 focus:outline-none focus:border-emerald-300 cursor-pointer"
-                >
-                  {types.map(type => (
-                    <option key={type} value={type}>{type}</option>
-                  ))}
-                </select>
-
-                <div className="flex gap-1 bg-gray-100 rounded-2xl p-1">
-                  <button onClick={() => setViewMode('grid')} className={`p-2.5 rounded-xl ${viewMode === 'grid' ? 'bg-white shadow-sm text-emerald-600' : 'text-gray-400'}`}>
-                    <Grid size={18} />
-                  </button>
-                  <button onClick={() => setViewMode('list')} className={`p-2.5 rounded-xl ${viewMode === 'list' ? 'bg-white shadow-sm text-emerald-600' : 'text-gray-400'}`}>
-                    <List size={18} />
-                  </button>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="text-[9px] font-black text-emerald-500 uppercase tracking-wider">
+                      {prophet.type === 'Messenger' ? 'Rasul' : 'Nabi'}
+                    </span>
+                    <span className="w-1 h-1 bg-emerald-200 rounded-full" />
+                    <span className="text-[9px] font-black text-gray-400 uppercase tracking-wider">{prophet.era}</span>
+                  </div>
+                  <div className="flex items-baseline gap-2 flex-wrap">
+                    <h3 className="font-black text-lg text-gray-900 group-hover:text-emerald-600 transition-colors">
+                      {prophet.name}
+                    </h3>
+                    <span className="font-arabic text-sm text-gray-300">{prophet.nameAr}</span>
+                  </div>
+                  <p className="text-xs text-gray-400 line-clamp-1 mt-0.5">
+                    "{prophet.desc}"
+                  </p>
                 </div>
               </div>
+
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1 px-2 py-1 bg-emerald-50 rounded-full">
+                  <Zap size={10} className="text-amber-500 fill-amber-500" />
+                  <span className="text-[9px] font-bold text-emerald-600">{prophet.xpReward} XP</span>
+                </div>
+                <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-emerald-50 group-hover:text-emerald-500 transition-all">
+                  <ChevronRight size={16} />
+                </div>
+              </div>
+            </motion.button>
+          ))}
+          
+          {filteredProphets.length === 0 && (
+            <div className="text-center py-10">
+              <p className="text-gray-400 text-base">No prophets found matching your search</p>
             </div>
+          )}
+        </div>
 
-            <p className="text-sm text-gray-500 -mt-4">Showing {filteredProphets.length} of {allProphets.length} prophets</p>
+        <div className="bg-gray-50 rounded-2xl p-6 text-center border border-gray-100">
+          <p className="text-emerald-600 text-[10px] font-black uppercase tracking-wider mb-1">Featured Quranic Verse</p>
+          <p className="text-gray-500 text-xs italic max-w-xl mx-auto leading-relaxed">
+            "And each story We relate to you from the news of the messengers is that by which We make firm your heart."
+          </p>
+          <p className="text-gray-400 text-[10px] mt-2">Surah Hud, 11:120</p>
+        </div>
+      </>
+    ) : (
+      // IMMERSIVE PROPHET DETAIL VIEW (same as before)
+      <motion.div 
+        key="prophet-detail"
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -20 }}
+        className="w-full"
+      >
+        {/* Back Button */}
+        <button 
+          onClick={handleCloseDetail}
+          className="mb-4 flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-emerald-50 text-gray-600 hover:text-emerald-600 rounded-xl transition-all duration-300 text-sm font-medium"
+        >
+          <ArrowLeft size={16} />
+          Back to Prophets
+        </button>
 
-            <motion.div 
-              layout
-              className={viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "space-y-3"}
-            >
-              <AnimatePresence>
-                {filteredProphets.map((prophet, i) => (
-                  <ProphetCard key={prophet.id} prophet={prophet} onClick={setSelectedProphet} index={i} />
-                ))}
-              </AnimatePresence>
-            </motion.div>
-
-            {filteredProphets.length === 0 && (
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-center py-16"
-              >
-                <p className="text-gray-400 text-xl font-light">No prophets found matching your filters</p>
-              </motion.div>
-            )}
-
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="bg-gray-50 rounded-[3rem] p-8 text-center border border-gray-100"
-            >
-              <p className="text-emerald-600 text-[10px] font-black uppercase tracking-[0.2em] mb-2">Featured Quranic Verse</p>
-              <p className="text-gray-600 text-base italic max-w-2xl mx-auto leading-relaxed">
-                "And each [story] We relate to you from the news of the messengers is that by which We make firm your heart. And there has come to you in this the truth and an instruction and a reminder for the believers."
-              </p>
-              <p className="text-gray-400 text-sm mt-3 font-mono">Surah Hud, 11:120</p>
-            </motion.div>
+        {/* Prophet Detail Hero */}
+        <div className={`relative h-80 md:h-96 bg-gradient-to-br ${selectedProphet.gradient || 'from-emerald-800 to-emerald-950'} flex flex-col items-center justify-center overflow-hidden rounded-3xl shadow-xl`}>
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="relative z-10 text-center text-white px-4"
+          >
+            <div className="w-28 h-28 bg-white/20 backdrop-blur-3xl rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg ring-1 ring-white/30 border-4 border-white/10 overflow-hidden">
+              <span className="text-6xl">{selectedProphet.icon}</span>
+            </div>
+            <div className="space-y-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-0.5 bg-emerald-500/20 rounded-full text-[9px] font-black uppercase tracking-wider border border-white/10">
+                <Sparkles size={10} className="text-emerald-400" /> {selectedProphet.type}
+              </span>
+              <h2 className="text-5xl md:text-7xl font-black tracking-tighter drop-shadow-2xl leading-none uppercase">
+                {selectedProphet.name}
+              </h2>
+              <p className="text-2xl md:text-3xl font-arabic text-emerald-200/50">{selectedProphet.nameAr}</p>
+              <p className="text-base text-emerald-200/70 mt-2 max-w-md mx-auto">{selectedProphet.title}</p>
+            </div>
           </motion.div>
-        )}
+        </div>
+
+        {/* Prophet Details Content */}
+        <div className="py-8 space-y-8">
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Left Column */}
+            <div className="space-y-6">
+              <div>
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="w-8 h-0.5 bg-emerald-600" />
+                  <p className="text-[10px] font-black text-emerald-600 uppercase tracking-wider">Legacy Narrative</p>
+                </div>
+                <h3 className="text-xl md:text-2xl font-black text-gray-900 mb-3 uppercase">{selectedProphet.title}</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">{selectedProphet.fullStory}</p>
+              </div>
+
+              <div>
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="w-8 h-0.5 bg-amber-500" />
+                  <p className="text-[10px] font-black text-amber-600 uppercase tracking-wider">Divine Miracles</p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {selectedProphet.miracles.map((m, i) => (
+                    <span key={i} className="px-3 py-1.5 bg-amber-50 rounded-full text-xs font-medium text-amber-700">{m}</span>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="w-8 h-0.5 bg-emerald-600" />
+                  <p className="text-[10px] font-black text-emerald-600 uppercase tracking-wider">Quranic Verses</p>
+                </div>
+                <div className="space-y-2">
+                  {selectedProphet.verses.map((v, i) => (
+                    <div key={i} className="bg-emerald-50/30 rounded-xl p-3 border border-emerald-100">
+                      <p className="text-emerald-800 text-sm italic">"{v}"</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {selectedProphet.timeline && (
+                <div>
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="w-8 h-0.5 bg-blue-500" />
+                    <p className="text-[10px] font-black text-blue-600 uppercase tracking-wider">Timeline</p>
+                  </div>
+                  <div className="space-y-2">
+                    {selectedProphet.timeline.map((t, i) => (
+                      <div key={i} className="flex items-center gap-3 text-sm">
+                        <span className="w-20 text-xs font-bold text-blue-600">{t.year}</span>
+                        <span className="text-gray-600">{t.event}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            {/* Right Column */}
+            <div className="space-y-6">
+              <div>
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="w-8 h-0.5 bg-indigo-500" />
+                  <p className="text-[10px] font-black text-indigo-600 uppercase tracking-wider">Sacred Sayings</p>
+                </div>
+                <div className="space-y-3">
+                  {selectedProphet.sayings.map((s, i) => (
+                    <div key={i} className="relative p-4 bg-indigo-50/50 rounded-xl border border-indigo-100/50">
+                      <Quote size={28} className="absolute -top-3 -left-2 text-indigo-100" strokeWidth={2} />
+                      <p className="text-sm font-medium text-indigo-900 italic pl-4">"{s}"</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="w-8 h-0.5 bg-purple-500" />
+                  <p className="text-[10px] font-black text-purple-600 uppercase tracking-wider">Key Teachings</p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {selectedProphet.teachings.map((t, i) => (
+                    <span key={i} className="px-3 py-1.5 bg-purple-50 rounded-full text-xs font-medium text-purple-700">{t}</span>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="w-8 h-0.5 bg-rose-500" />
+                  <p className="text-[10px] font-black text-rose-600 uppercase tracking-wider">Life Lessons</p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {selectedProphet.lessons.map((l, i) => (
+                    <span key={i} className="px-3 py-1.5 bg-rose-50 rounded-full text-xs font-medium text-rose-700">{l}</span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Wisdom Integration Card */}
+              <div className="bg-gradient-to-br from-emerald-900 to-teal-900 p-6 rounded-2xl text-white space-y-4 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl -mr-16 -mt-16" />
+                <div className="relative z-10 flex items-center gap-4">
+                  <div className="w-12 h-12 bg-emerald-800/40 rounded-xl flex items-center justify-center text-emerald-400">
+                    <Trophy size={24} />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-[9px] font-black text-emerald-400 uppercase tracking-wider">Core Lesson</p>
+                    <h4 className="text-base font-bold leading-tight">{selectedProphet.lesson}</h4>
+                  </div>
+                </div>
+                
+                <div className="flex justify-between items-center pt-3 border-t border-emerald-800/50">
+                  <p className="text-[9px] font-black uppercase tracking-wider text-emerald-400/70">XP Reward</p>
+                  <p className="text-xl font-black text-emerald-400">+{selectedProphet.xpReward} XP</p>
+                </div>
+                
+                <button 
+                  onClick={() => handleIntegrateWisdom(selectedProphet)}
+                  className="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-emerald-950 rounded-xl font-black uppercase tracking-wider text-xs shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2"
+                >
+                  Integrate Wisdom <Plus size={16} strokeWidth={2.5} />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    )}
+  </motion.div>
+)}
 
         {/* Prayers Section */}
         {activeSection === 'prayers' && (
@@ -1853,57 +1660,186 @@ export default function SpiritualDNA() {
 
       {/* Modals */}
       <AnimatePresence>
-        {selectedProphet && (
-          <ProphetModal 
-            prophet={selectedProphet} 
-            onClose={() => setSelectedProphet(null)} 
-            onIntegrate={handleIntegrateWisdom}
-          />
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
         {selectedPrayer && (
-          <PrayerModal 
-            prayer={selectedPrayer} 
-            onClose={() => setSelectedPrayer(null)} 
-          />
+          <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 md:p-8">
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              exit={{ opacity: 0 }} 
+              className="absolute inset-0 bg-emerald-950/60 backdrop-blur-xl" 
+              onClick={() => setSelectedPrayer(null)} 
+            />
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0, y: 30 }} 
+              animate={{ scale: 1, opacity: 1, y: 0 }} 
+              exit={{ scale: 0.9, opacity: 0, y: 30 }} 
+              className="bg-white max-w-2xl w-full rounded-[2rem] shadow-2xl relative overflow-hidden"
+            >
+              <div className={`relative p-8 text-white ${selectedPrayer.name === 'Fajr' ? 'bg-gradient-to-br from-amber-600 to-orange-700' : 
+                selectedPrayer.name === 'Dhuhr' ? 'bg-gradient-to-br from-orange-500 to-yellow-600' :
+                selectedPrayer.name === 'Asr' ? 'bg-gradient-to-br from-blue-500 to-indigo-600' :
+                selectedPrayer.name === 'Maghrib' ? 'bg-gradient-to-br from-indigo-600 to-purple-700' :
+                'bg-gradient-to-br from-indigo-800 to-purple-900'}`}>
+                <button onClick={() => setSelectedPrayer(null)} className="absolute top-6 right-6 p-2 bg-white/10 hover:bg-white/20 rounded-xl transition-all">
+                  <X size={20} />
+                </button>
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-3xl">
+                    {selectedPrayer.icon}
+                  </div>
+                  <div>
+                    <h2 className="text-4xl font-black">{selectedPrayer.name}</h2>
+                    <p className="text-3xl font-arabic opacity-90">{selectedPrayer.nameAr}</p>
+                    <p className="text-base opacity-80 mt-1">{selectedPrayer.time} • {selectedPrayer.rakat} Rak'at</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="p-8 space-y-6">
+                <p className="text-gray-600 text-base leading-relaxed">{selectedPrayer.description}</p>
+                
+                <div>
+                  <h3 className="text-sm font-black uppercase tracking-wider text-emerald-600 mb-3">Spiritual Benefits</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedPrayer.benefits.map((benefit, idx) => (
+                      <span key={idx} className="px-3 py-1.5 bg-emerald-50 rounded-full text-sm text-emerald-700">
+                        {benefit}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                
+                <div>
+                  <h3 className="text-sm font-black uppercase tracking-wider text-emerald-600 mb-3">Recommended Surahs</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedPrayer.recommendedSurahs.map((surah, idx) => (
+                      <span key={idx} className="px-3 py-1.5 bg-amber-50 rounded-full text-sm text-amber-700">
+                        {surah}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="bg-gray-50 rounded-xl p-4">
+                  <h3 className="text-sm font-black uppercase tracking-wider text-emerald-600 mb-2">Prophetic Saying</h3>
+                  <p className="text-gray-600 text-base italic">"{selectedPrayer.hadith}"</p>
+                </div>
+                
+                <div className="bg-purple-50 rounded-xl p-4">
+                  <h3 className="text-sm font-black uppercase tracking-wider text-purple-600 mb-2">Spiritual Significance</h3>
+                  <p className="text-purple-800 text-base">{selectedPrayer.spiritualSignificance}</p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
 
       <AnimatePresence>
         {selectedEvent && (
-          <EventModal 
-            event={selectedEvent} 
-            onClose={() => setSelectedEvent(null)} 
-            onIntegrate={handleIntegrateEvent}
-            isIntegrating={integratingEvent === selectedEvent.id}
-          />
+          <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 md:p-8">
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              exit={{ opacity: 0 }} 
+              className="absolute inset-0 bg-emerald-950/60 backdrop-blur-xl" 
+              onClick={() => setSelectedEvent(null)} 
+            />
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0, y: 30 }} 
+              animate={{ scale: 1, opacity: 1, y: 0 }} 
+              exit={{ scale: 0.9, opacity: 0, y: 30 }} 
+              className="bg-white max-w-2xl w-full rounded-[2rem] shadow-2xl relative overflow-hidden"
+            >
+              <div className="relative bg-gradient-to-r from-emerald-700 to-teal-700 text-white p-8">
+                <button onClick={() => setSelectedEvent(null)} className="absolute top-6 right-6 p-2 bg-white/10 hover:bg-white/20 rounded-xl transition-all">
+                  <X size={20} />
+                </button>
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-3xl">
+                    {selectedEvent.icon}
+                  </div>
+                  <div>
+                    <h2 className="text-4xl font-black">{selectedEvent.name}</h2>
+                    <p className="text-3xl font-arabic opacity-90">{selectedEvent.nameAr}</p>
+                    <p className="text-base opacity-80 mt-1">{selectedEvent.month}</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="p-8 space-y-6">
+                <p className="text-gray-600 text-base leading-relaxed">{selectedEvent.description}</p>
+                
+                <div>
+                  <h3 className="text-sm font-black uppercase tracking-wider text-emerald-600 mb-3">Practices</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedEvent.practices.map((practice, idx) => (
+                      <span key={idx} className="px-3 py-1.5 bg-emerald-50 rounded-full text-sm text-emerald-700">
+                        {practice}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                
+                <div>
+                  <h3 className="text-sm font-black uppercase tracking-wider text-amber-600 mb-3">Virtues</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedEvent.virtues.map((virtue, idx) => (
+                      <span key={idx} className="px-3 py-1.5 bg-amber-50 rounded-full text-sm text-amber-700">
+                        {virtue}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="bg-gray-50 rounded-xl p-4">
+                  <h3 className="text-sm font-black uppercase tracking-wider text-emerald-600 mb-2">Prophetic Saying</h3>
+                  <p className="text-gray-600 text-base italic">"{selectedEvent.hadith}"</p>
+                </div>
+                
+                <button 
+                  onClick={() => handleIntegrateEvent(selectedEvent)}
+                  disabled={integratingEvent === selectedEvent.id}
+                  className="w-full py-4 bg-emerald-600 text-white rounded-xl font-black uppercase tracking-wider text-base hover:bg-emerald-700 transition-all shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {integratingEvent === selectedEvent.id ? (
+                    <><RefreshCw className="animate-spin" size={18} /> Participating...</>
+                  ) : (
+                    <>✨ Participate & Earn +{selectedEvent.xpReward} XP ✨</>
+                  )}
+                </button>
+              </div>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
 
       <style>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 6px;
+        @import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+        
+        .font-arabic {
+          font-family: 'Amiri', 'Scheherazade New', 'Noto Naskh Arabic', serif;
         }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #d1fae5;
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #a7f3d0;
-        }
+
         .line-clamp-2 {
           display: -webkit-box;
           -webkit-line-clamp: 2;
           -webkit-box-orient: vertical;
           overflow: hidden;
         }
-        .font-arabic {
-          font-family: 'Amiri', 'Scheherazade New', 'Noto Naskh Arabic', serif;
+
+        ::-webkit-scrollbar {
+          width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+          background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+          background: #10b981;
+          border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+          background: #059669;
         }
       `}</style>
     </div>
