@@ -117,30 +117,34 @@ Open http://localhost:5173
 
 📁 Project Structure
 
-Echoes_Of_Jannah/
-│
-├── backend/
-│ ├── server.js
-│ ├── routes/
-│ ├── middleware/
-│ └── utils/
-│
-├── src/
-│ ├── components/
-│ ├── contexts/
-│ ├── pages/
-│ ├── api/
-│ ├── hooks/
-│ ├── App.jsx
-│ └── main.jsx
-│
-├── public/
-│ └── logo.png
-│
-├── package.json
-├── vite.config.js
-├── tailwind.config.js
-└── vercel.json
+- **Echoes_Of_Jannah/**
+  - **backend/**
+    - server.js
+    - routes/
+    - middleware/
+    - utils/
+  - **src/**
+    - components/
+    - contexts/
+    - pages/
+    - api/
+    - hooks/
+    - App.jsx
+    - main.jsx
+  - **public/**
+    - logo.png
+  - package.json
+  - vite.config.js
+  - tailwind.config.js
+  - vercel.json
+
+## Features
+
+- **Quran Browser** - Read verses with translations
+- **Emotion Mirror** - Find verses by your mood
+- **Life Timeline** - Connect life events to Quran
+- **Spiritual DNA** - Track your spiritual growth
+- **Community Hub** - Share reflections with others
 
 🔐 API Endpoints
 
