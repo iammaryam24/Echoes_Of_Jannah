@@ -1,22 +1,29 @@
-README.md
-
-#  Echoes of Jannah
-
 <div align="center">
-
-![Echoes of Jannah Banner](https://via.placeholder.com/1200x400?text=Echoes+of+Jannah)
-
-[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react)](https://reactjs.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-20-339933?logo=nodedotjs)](https://nodejs.org/)
-[![Express](https://img.shields.io/badge/Express-4.18-000000?logo=express)](https://expressjs.com/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
-[![Vite](https://img.shields.io/badge/Vite-5-646CFF?logo=vite)](https://vitejs.dev/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-
-**A Full-Stack Spiritual Companion App for Connecting with the Quran**
-
-[Live Demo](https://echoes-of-jannah.vercel.app) | [API Docs](https://api-docs.quran.foundation) | [Report Bug](https://github.com/iammaryam24/Echoes-Of-Jannah/issues)
-
+  
+  <!-- Banner Image -->
+  <img src="https://raw.githubusercontent.com/iammaryam24/Echoes_Of_Jannah/main/public/logo.png" alt="Echoes of Jannah Logo" width="120" />
+  
+  <h1>🕌 Echoes of Jannah</h1>
+  
+  <p><strong>A Full-Stack Spiritual Companion App for Connecting with the Quran</strong></p>
+  
+  <!-- Banner GIF/Image -->
+  <img src="https://via.placeholder.com/1200x400/064e3b/ffffff?text=Echoes+of+Jannah+-+Your+Spiritual+Journey+Begins+Here" alt="Echoes of Jannah Banner" width="100%" />
+  
+  <p>
+    <a href="https://echoes-of-jannah.vercel.app"><img src="https://img.shields.io/badge/Live_Demo-Vercel-000000?style=for-the-badge&logo=vercel" alt="Live Demo" /></a>
+    <a href="https://github.com/iammaryam24/Echoes_Of_Jannah"><img src="https://img.shields.io/github/stars/iammaryam24/Echoes_Of_Jannah?style=for-the-badge&logo=github&color=yellow" alt="GitHub Stars" /></a>
+    <a href="https://github.com/iammaryam24/Echoes_Of_Jannah/blob/main/LICENSE"><img src="https://img.shields.io/github/license/iammaryam24/Echoes_Of_Jannah?style=for-the-badge&logo=mit&color=green" alt="License" /></a>
+  </p>
+  
+  <p>
+    <img src="https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white&style=flat-square" alt="React" />
+    <img src="https://img.shields.io/badge/Node.js-20-339933?logo=nodedotjs&logoColor=white&style=flat-square" alt="Node.js" />
+    <img src="https://img.shields.io/badge/Express-4.18-000000?logo=express&logoColor=white&style=flat-square" alt="Express" />
+    <img src="https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white&style=flat-square" alt="Tailwind CSS" />
+    <img src="https://img.shields.io/badge/Vite-5-646CFF?logo=vite&logoColor=white&style=flat-square" alt="Vite" />
+  </p>
+  
 </div>
 
 ---
@@ -34,89 +41,75 @@ Millions reconnect with the Quran during Ramadan, but many struggle to maintain 
 - 👥 **Building community** through shared reflections
 - 🎯 **Creating habits** with daily challenges and streaks
 
-### ✨ Key Features
+---
 
-| Feature               | Description                                                    | Status |
-|-----------------------|----------------------------------------------------------------|--------|
-| 📖 **Quran Journey**  | Read, search, and listen to Quranic verses with translations   | ✅     |
-| 💭 **Emotion Mirror** | Share feelings and receive relevant Quranic verses for guidance| ✅     |
-| 🧬 **Spiritual DNA**  | Track spiritual growth, levels, and unlock achievements        | ✅     |
-| 📅 **Life Timeline**  | Document life events and connect with Quranic wisdom           | ✅     |
-| 👥 **Community Hub**  | Share reflections with fellow spiritual seekers                | ✅     |
-| 🎯 **Daily Challenges**| Build consistent spiritual habits and earn XP                  | ✅     |
-| 🎵 **Sacred Audio**   | Listen to beautiful Quran recitations by renowned reciters     | ✅     |
-| 📊 **Advanced Analytics**| Deep insights into your spiritual journey with visual charts  | ✅     |
+## ✨ Key Features
 
-ARCHITECTURE:
+| Feature | Description | Status |
+|---------|-------------|--------|
+| 📖 **Quran Journey** | Read, search, and listen to Quranic verses with translations | ✅ |
+| 💭 **Emotion Mirror** | Share feelings and receive relevant Quranic verses for guidance | ✅ |
+| 🧬 **Spiritual DNA** | Track spiritual growth, levels, and unlock achievements | ✅ |
+| 📅 **Life Timeline** | Document life events and connect with Quranic wisdom | ✅ |
+| 👥 **Community Hub** | Share reflections with fellow spiritual seekers | ✅ |
+| 🎯 **Daily Challenges** | Build consistent spiritual habits and earn XP | ✅ |
+| 🎵 **Sacred Audio** | Listen to beautiful Quran recitations by renowned reciters | ✅ |
+| 📊 **Advanced Analytics** | Deep insights into your spiritual journey with visual charts | ✅ |
 
-                    ┌─────────────────────────────────────┐
-                    │         User Browser                │
-                    │    (React + Vite Frontend)          │
-                    └─────────────┬───────────────────────┘
-                                  │
-                                  │ HTTPS / API Calls
-                                  ▼
-                    ┌─────────────────────────────────────┐
-                    │      Backend Server (Node.js)        │
-                    │         Express.js API               │
-                    │                                      │
-                    │  ┌──────────┐  ┌──────────┐        │
-                    │  │  Auth    │  │  User    │        │
-                    │  │  Routes  │  │  Routes  │        │
-                    │  └──────────┘  └──────────┘        │
-                    │  ┌──────────┐  ┌──────────┐        │
-                    │  │ Content  │  │  Quran   │        │
-                    │  │  Proxy   │  │   API    │        │
-                    │  └──────────┘  │  Client  │        │
-                    │                 └──────────┘        │
-                    └─────────────┬───────────────────────┘
-                                  │
-                                  │ API Keys & Tokens
-                                  ▼
-                    ┌─────────────────────────────────────┐
-                    │      Quran Foundation APIs          │
-                    │                                      │
-                    │  • Content API (Chapters/Verses)    │
-                    │  • Audio API (Recitations)          │
-                    │  • Tafsir API (Interpretations)     │
-                    │  • Search API (Semantic Search)     │
-                    │  • OAuth2 Auth API                  │
-                    └─────────────────────────────────────┘
+---
 
 ## 🛠️ Built With
 
 ### Frontend
-
-| Technology          | Purpose                       |
-|---------------------|-------------------------------|
-| React 18            | UI library                    |
-| Vite                | Build tool                    |
-| Tailwind CSS        | Styling                       |
-| Framer Motion       | Animations                    |
-| Recharts            | Analytics charts              |
-| React Hot Toast     | Notifications                 |
+| Technology | Purpose |
+|------------|---------|
+| React 18 | UI library |
+| Vite | Build tool |
+| Tailwind CSS | Styling |
+| Framer Motion | Animations |
+| Recharts | Analytics charts |
+| React Hot Toast | Notifications |
+| Lucide React | Icons |
 
 ### Backend
-
-| Technology          | Purpose                       |
-|---------------------|-------------------------------|
-| Node.js             | Runtime                       |
-| Express.js          | Web framework                 |
-| Express Session     | Session management            |
-| Axios               | HTTP client                   |
-| Helmet              | Security headers              |
-| Compression         | Response compression          |
-| Rate Limit          | DDoS protection               |
+| Technology | Purpose |
+|------------|---------|
+| Node.js | Runtime |
+| Express.js | Web framework |
+| Axios | HTTP client |
 
 ### APIs Used (Quran Foundation)
+| API Category | Purpose |
+|--------------|---------|
+| Content API | Get surahs and verses |
+| Audio API | Audio recitations |
+| Tafsir API | Verse interpretations |
+| Search API | Semantic search |
+| Auth API | User authentication |
 
-| API Category        | Endpoints                                      | Purpose                   |
-|---------------------|------------------------------------------------|---------------------------|
-| Content API         | `/chapters`, `/quran/verses/{script}`          | Get surahs and verses     |
-| Audio API           | `/resources/recitations`, `/chapter_recitations/{id}` | Audio recitations     |
-| Tafsir API          | `/tafsir`                                      | Verse interpretations     |
-| Search API          | `/search`                                      | Semantic search           |
-| Auth API            | OAuth2 endpoints                               | User authentication       |
+---
+
+## 🏗️ Architecture
+┌─────────────────────────────────────┐
+│ User Browser │
+│ (React + Vite Frontend) │
+└─────────────┬───────────────────────┘
+│ HTTPS / API Calls
+▼
+┌─────────────────────────────────────┐
+│ Backend Server (Node.js) │
+│ Express.js API │
+│ │
+│ ┌──────────┐ ┌──────────┐ │
+│ │ Auth │ │ User │ │
+│ │ Routes │ │ Routes │ │
+│ └──────────┘ └──────────┘ │
+└─────────────┬───────────────────────┘
+│ API Keys & Tokens
+▼
+┌─────────────────────────────────────┐
+│ Quran Foundation APIs │
+└─────────────────────────────────────┘
 
 ---
 
@@ -130,10 +123,9 @@ ARCHITECTURE:
 
 ### Installation
 
-```bash
 # Clone the repository
-git clone https://github.com/iammaryam24/Echoes-Of-Jannah.git
-cd Echoes-Of-Jannah
+git clone https://github.com/iammaryam24/Echoes_Of_Jannah.git
+cd Echoes_Of_Jannah
 
 # Install frontend dependencies
 npm install
@@ -142,27 +134,10 @@ npm install
 cd backend
 npm install
 cd ..
-
-# Create environment files
-cp .env.example .env
-cp backend/.env.example backend/.env
 Environment Variables
-Frontend (.env)
-env
-VITE_API_URL=http://localhost:3001
-VITE_QURAN_API_BASE=https://api.quran.foundation/api/v1
-Backend (backend/.env)
-env
-NODE_ENV=development
-PORT=3001
-FRONTEND_URL=http://localhost:5173
-SESSION_SECRET=your-secret-key-here
+Create .env file in root:
 
-# Quran Foundation API Credentials
-PRELIVE_CLIENT_ID=your_client_id
-PRELIVE_CLIENT_SECRET=your_client_secret
-Running Locally
-bash
+Run Locally:
 # Terminal 1: Start backend server
 cd backend
 npm run dev
@@ -172,15 +147,14 @@ npm run dev
 Open http://localhost:5173
 
 📁 Project Structure
-text
-echoes-of-jannah/
+
+Echoes_Of_Jannah/
 │
 ├── backend/                    # Backend server
 │   ├── server.js              # Express server
 │   ├── routes/                # API routes
 │   ├── middleware/            # Auth middleware
-│   ├── utils/                 # Utility functions
-│   └── package.json
+│   └── utils/                 # Utility functions
 │
 ├── src/                       # Frontend source
 │   ├── api/                   # API integration
@@ -192,54 +166,39 @@ echoes-of-jannah/
 │   ├── App.jsx                # Main app
 │   └── main.jsx               # Entry point
 │
-├── public/                    # Static assets
+├── public/                    # Static assets (logo.png, favicon)
 ├── index.html
 ├── package.json
 ├── vite.config.js
 ├── tailwind.config.js
-└── README.md
-🔐 API Integration
-Quran Foundation APIs Implemented
-javascript
-// 1. Content API - Get all surahs
-GET /api/chapters
+└── vercel.json
 
-// 2. Verses API - Get verses with Arabic text
-GET /api/verses?chapter=1&script=uthmani
+🔐 API Endpoints
 
-// 3. Audio API - Get recitations
-GET /api/recitations
-GET /api/chapter-recitations/{reciterId}
-
-// 4. Tafsir API - Get interpretations
-GET /api/tafsir?chapter=1&verse=1
-
-// 5. Search API - Semantic search
-GET /api/search?q=mercy
-Backend Endpoints
 Method	Endpoint	Description
-GET	/api/chapters	Get all surahs
-GET	/api/verses	Get verses by chapter
-GET	/api/recitations	Get reciters list
-GET	/api/tafsir	Get verse tafsir
-GET	/api/search	Search Quran
-POST	/api/bookmarks	Save bookmark
-GET	/api/bookmarks	Get user bookmarks
-POST	/api/reading-sessions	Track reading
-GET	/api/streaks	Get user streaks
-1.	Go to Cyclic.sh
-2.	Sign up with GitHub
-3.	Click "Link Your Own" → select your repo
-4.	Set:
-o	Build Command: cd backend && npm install
-o	Start Command: cd backend && node server.js
-5.	Click "Deploy"
-Deploy Frontend (Vercel)
-bash
-# Install Vercel CLI
-npm install -g vercel
+GET	/api/auth/login-url	Get OAuth login URL
+POST	/api/auth/exchange	Exchange code for tokens
+POST	/api/auth/refresh	Refresh access token
+GET	/api/health	Health check
 
-# Build and deploy
-npm run build
-vercel --prod
-Or connect your GitHub repo to Vercel for automatic deployments.
+🚢 Deployment:
+
+-Deploy to Vercel
+-Push code to GitHub
+-Go to Vercel
+-Import your GitHub repository
+-Add environment variables
+-Click Deploy
+
+🙏 Acknowledgments:
+
+1.Quran Foundation API for providing the Quranic data
+2.AlQuran Cloud API for additional resources
+3.All contributors and supporters
+
+📞 Contact:
+
+Maryam - GitHub
+Project Link: https://github.com/iammaryam24/Echoes_Of_Jannah
+
+<div align="center"> <p>Made with ❤️ for the love of Quran</p> <p>“Indeed, in the remembrance of Allah do hearts find rest.” — Quran 13:28</p> </div> ``
