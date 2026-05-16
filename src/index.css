@@ -16,7 +16,6 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* Minimal scrollbar */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -43,7 +42,6 @@
 }
 
 @layer components {
-  /* Clean card */
   .card {
     background-color: #ffffff;
     border: 1px solid #f3f4f6;
@@ -56,7 +54,6 @@
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
   }
 
-  /* Primary button - emerald */
   .btn-primary {
     background-color: #059669;
     color: white;
@@ -76,7 +73,6 @@
     cursor: not-allowed;
   }
   
-  /* Secondary button - outline */
   .btn-secondary {
     background-color: white;
     border: 1px solid #e5e7eb;
@@ -93,7 +89,6 @@
     background-color: #f9fafb;
   }
 
-  /* Minimal input */
   .input-minimal {
     width: 100%;
     padding: 0.625rem 1rem;
@@ -115,17 +110,295 @@
   }
 }
 
-/* Utility */
 .container-clean {
   max-width: 1280px;
   margin: 0 auto;
   padding: 0 1.5rem;
 }
 
-/* Animation */
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
 .animate-spin {
   animation: spin 1s linear infinite;
+}
+
+/* ========== ZOOM FIX (85%) ========== */
+html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100%;
+  margin: 0 !important;
+  padding: 0 !important;
+  background-color: #ffffff;
+  transform: scale(0.85);
+  transform-origin: top left;
+  width: 117.65%;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ========== RESET MARGINS/PADDINGS ========== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ========== PAGE WRAPPER LAYOUT - KILLS FOOTER WHITE SPACE ========== */
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.content-wrapper {
+  flex: 1 0 auto;
+  width: 100%;
+}
+
+.footer-wrapper {
+  flex-shrink: 0;
+  width: 100%;
+  margin-top: 0;
+  margin-bottom: 0;
+  background-color: #ffffff;
+  line-height: 0;
+}
+
+/* ========== FOOTER WHITE SPACE KILLER - NO EXTRA LINE BELOW ========== */
+footer,
+.footer {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+  background-color: #ffffff;
+  width: 100%;
+  display: block;
+}
+
+footer::before,
+footer::after,
+.footer::before,
+.footer::after {
+  display: none !important;
+  content: none !important;
+}
+
+footer > :last-child,
+.footer > :last-child {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+footer .container-clean,
+.footer .container-clean {
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* Remove body pseudo-element gaps */
+body::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Remove margins from common elements */
+blockquote, dl, dd, h1, h2, h3, h4, h5, h6, hr, figure, p, pre {
+  margin: 0;
+}
+
+ul, ol {
+  margin: 0;
+  padding: 0;
+}
+
+/* ========== ECHOES OF JANNAH - GREEN THEME FOOTER STYLES ========== */
+.echoes-footer {
+  background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+  border-top: 1px solid #d1fae5;
+  padding: 3rem 0 0 !important;
+  margin-bottom: 0 !important;
+  width: 100%;
+}
+
+/* Remove extra spacing from footer internal elements */
+.echoes-footer * {
+  margin-bottom: 0;
+}
+
+.footer-brand h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #059669, #10b981);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 0.75rem;
+}
+
+.footer-brand p {
+  color: #4b5563;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  max-width: 280px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 2rem;
+  margin: 2rem 0 1rem 0;
+}
+
+.footer-heading {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #059669;
+  margin-bottom: 1rem;
+}
+
+.footer-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.footer-links li {
+  margin-bottom: 0.5rem;
+}
+
+.footer-links a {
+  color: #6b7280;
+  text-decoration: none;
+  font-size: 0.8rem;
+  transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+  color: #059669;
+}
+
+/* Subscribe section */
+.subscribe-group {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.subscribe-input {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1fae5;
+  border-radius: 0.5rem;
+  font-size: 0.8rem;
+  background: white;
+}
+
+.subscribe-input:focus {
+  outline: none;
+  border-color: #059669;
+  ring: 2px solid #a7f3d0;
+}
+
+.subscribe-btn {
+  background-color: #059669;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.subscribe-btn:hover {
+  background-color: #047857;
+}
+
+/* Weather widget */
+.weather-widget {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #f0fdf4;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  width: fit-content;
+  margin: 0.5rem 0 0 0;
+}
+
+.weather-icon {
+  font-size: 1.25rem;
+}
+
+.weather-temp {
+  font-weight: 600;
+  color: #065f46;
+  font-size: 0.875rem;
+}
+
+.weather-desc {
+  color: #6b7280;
+  font-size: 0.75rem;
+}
+
+/* Copyright - no extra space below */
+.copyright {
+  text-align: center;
+  padding: 1.5rem 0 0 0;
+  margin: 1rem 0 0 0;
+  border-top: 1px solid #d1fae5;
+  font-size: 0.7rem;
+  color: #9ca3af;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .footer-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .subscribe-group {
+    flex-direction: column;
+  }
+  
+  .footer-brand p {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========== RESPONSIVE: ZOOM OFF ON MOBILE ========== */
+@media screen and (max-width: 768px) {
+  body {
+    width: 100%;
+    transform: none;
+  }
+}
+
+/* ========== EXTRA SAFETY - REMOVE ANY HIDDEN LINE/SPACE ========== */
+br:last-child,
+hr:last-child {
+  display: none;
+}
+
+body > :last-child {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
 }

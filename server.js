@@ -7,7 +7,8 @@ import axios from 'axios';
 const app = express();
 const PORT = 3001;
 
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+// ✅ FIXED: Changed from 5173 to 3000
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 app.use(express.json());
 
 const CLIENT_ID = '911c5b21-975f-4610-be81-f7158e7e6047';
@@ -18,6 +19,7 @@ const AUTH_BASE = 'https://prelive-oauth2.quran.foundation';
 const pkceStore = new Map();
 
 app.get('/api/auth/login-url', (req, res) => {
+  console.log('📡 GET /api/auth/login-url');
   const codeVerifier = crypto.randomBytes(32).toString('base64url');
   const hash = crypto.createHash('sha256').update(codeVerifier).digest();
   const codeChallenge = hash.toString('base64url');
@@ -35,10 +37,12 @@ app.get('/api/auth/login-url', (req, res) => {
     code_challenge_method: 'S256',
   });
   
+  console.log('✅ Auth URL generated');
   res.json({ url: `${AUTH_BASE}/oauth2/auth?${params.toString()}` });
 });
 
 app.post('/api/auth/exchange', async (req, res) => {
+  console.log('📡 POST /api/auth/exchange');
   const { code, state } = req.body;
   const pkceData = pkceStore.get(state);
   
@@ -68,6 +72,7 @@ app.post('/api/auth/exchange', async (req, res) => {
       user = JSON.parse(Buffer.from(payload, 'base64').toString('utf8'));
     }
     
+    console.log('✅ Token exchange successful');
     res.json({
       accessToken: tokenData.access_token,
       refreshToken: tokenData.refresh_token,
@@ -75,6 +80,7 @@ app.post('/api/auth/exchange', async (req, res) => {
       user
     });
   } catch (error) {
+    console.error('❌ Exchange failed:', error.message);
     res.status(500).json({ error: 'Token exchange failed' });
   }
 });
@@ -110,4 +116,6 @@ app.get('/api/health', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`✅ Server running on http://localhost:${PORT}`);
+  console.log(`📌 CORS origin: http://localhost:3000`);
+  console.log(`📌 Redirect URI: ${REDIRECT_URI}`);
 });

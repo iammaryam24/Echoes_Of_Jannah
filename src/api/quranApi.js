@@ -3,6 +3,10 @@
 
 const API_BASE = 'https://api.alquran.cloud/v1';
 
+// BISMILLAH CONSTANTS - COMPLETELY DISABLED
+// const BISMILLAH = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ";
+// const BISMILLAH_SIMPLE = "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ";
+
 // ============ VERSE APIs ============
 export const getVerse = async (surahNumber, verseNumber) => {
   try {
@@ -80,23 +84,28 @@ export const getAllSurahs = async () => {
   }
 };
 
-export const getSurah = async (surahNumber) => {
+export const getSurah = async (surahNumber, translationId = 'en.sahih') => {
   try {
-    const response = await fetch(`${API_BASE}/surah/${surahNumber}/editions/quran-uthmani,en.sahih`);
+    const response = await fetch(`${API_BASE}/surah/${surahNumber}/editions/quran-uthmani,${translationId}`);
     const data = await response.json();
     
     if (data.code === 200 && data.data) {
       const arabicEdition = data.data.find(d => d.edition?.identifier === 'quran-uthmani');
-      const englishEdition = data.data.find(d => d.edition?.identifier === 'en.sahih');
+      const englishEdition = data.data.find(d => d.edition?.identifier === translationId);
       const surahInfo = data.data[0];
       
-      const verses = surahInfo.ayahs.map((ayah, i) => ({
+      let verses = surahInfo.ayahs.map((ayah, i) => ({
         number: ayah.numberInSurah,
         arabic: arabicEdition?.ayahs[i]?.text || ayah.text,
         translation: englishEdition?.ayahs[i]?.text || '',
         juz: ayah.juz,
-        page: ayah.page
+        page: ayah.page,
+        sajda: ayah.sajda || false
       }));
+
+      // ========== COMPLETE FIX: NO BISMILLAH HANDLING AT ALL ==========
+      // Direct verses le lo, koi bhi modification nahi karni
+      // Jo bhi aaya API se wohi dikhao - NO REMOVAL, NO ADDITION
       
       return {
         success: true,
@@ -104,9 +113,11 @@ export const getSurah = async (surahNumber) => {
           number: surahInfo.number,
           name: surahInfo.name,
           englishName: surahInfo.englishName,
+          englishNameTranslation: surahInfo.englishNameTranslation || surahInfo.englishName,
           versesCount: surahInfo.numberOfAyahs,
           revelationType: surahInfo.revelationType,
-          verses
+          verses: verses,  // DIRECT VERSES - NO MODIFICATION
+          hasBismillah: false  // ALWAYS FALSE - KOI BISMILLAH NAHI
         }
       };
     }
@@ -120,6 +131,42 @@ export const getSurah = async (surahNumber) => {
 export const getSurahs = async () => {
   const result = await getAllSurahs();
   return result.data || [];
+};
+
+export const getJuz = async (juzNumber, translationId = 'en.sahih') => {
+  try {
+    const response = await fetch(`${API_BASE}/juz/${juzNumber}/editions/quran-uthmani,${translationId}`);
+    const data = await response.json();
+    
+    if (data.code === 200 && data.data) {
+      const editions = Array.isArray(data.data) ? data.data : [data.data];
+      const arabicEdition = editions.find(d => d.edition?.identifier === 'quran-uthmani') || editions[0];
+      const englishEdition = editions.find(d => d.edition?.identifier === translationId) || editions[1];
+      
+      const verses = (arabicEdition.ayahs || []).map((ayah, i) => ({
+        number: ayah.numberInSurah,
+        surahNumber: ayah.surah.number,
+        surahName: ayah.surah.englishName,
+        arabic: ayah.text,
+        translation: englishEdition?.ayahs?.[i]?.text || '',
+        juz: juzNumber,
+        page: ayah.page
+      }));
+      
+      return {
+        success: true,
+        data: {
+          number: juzNumber,
+          verses,
+          surahs: editions[0].surahs
+        }
+      };
+    }
+    return { success: false, data: null };
+  } catch (error) {
+    console.error('Error fetching juz:', error);
+    return { success: false, data: null };
+  }
 };
 
 // ============ SEARCH ============
@@ -282,7 +329,7 @@ export const saveSpiritualDNA = async (userId, dna) => {
 // ============ API OBJECTS ============
 export const quranApi = {
   getVerse, getTranslations, getTafsir, getAudioRecitation,
-  getAllSurahs, getSurahs, getSurah, search: searchQuran, getReciters,
+  getAllSurahs, getSurahs, getSurah, getJuz, search: searchQuran, getReciters,
   getRandomVerse: async () => getVerse(Math.floor(Math.random() * 114) + 1, 1)
 };
 

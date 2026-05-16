@@ -8,10 +8,8 @@ import LifeTimeline from './components/LifeTimeline';
 import EmotionMirror from './components/EmotionMirror';
 import QuranBrowser from './components/QuranBrowser';
 import SpiritualDNA from './components/SpiritualDNA';
-import DailyChallenge from './components/DailyChallenge';
 import CommunityHub from './components/CommunityHub';
-import QuranJourney from './components/QuranJourney';
-import ReflectionPost from './components/ReflectionPost';
+import QuranJourney from './components/QuranLifeCompanion';
 import AdvancedAnalytics from './components/AdvancedAnalytics';
 import AuthCallback from './pages/AuthCallback';
 import { useUser } from './contexts/UserContext';
@@ -60,10 +58,10 @@ function AppContent() {
     return () => clearTimeout(timer);
   }, [userId, loading]);
 
-  // Show welcome message when user authenticates via Quran Foundation OAuth
+  // Show welcome message when user authenticates
   useEffect(() => {
     if (isAuthenticated && user) {
-      toast.success(`Welcome ${user.name || user.given_name || 'Brother/Sister'}! May Allah bless your journey.`, {
+      toast.success(`Welcome ${user.name || 'Brother/Sister'}! May Allah bless your journey.`, {
         icon: '🌟',
         duration: 4000,
         style: { background: '#fff', color: '#374151', border: '1px solid #e5e7eb' },
@@ -73,14 +71,14 @@ function AppContent() {
 
   const renderView = () => {
     switch (currentView) {
-      case 'timeline':   return <LifeTimeline userId={userId} />;
-      case 'mirror':     return <EmotionMirror userId={userId} />;
-      case 'quran':      return <QuranBrowser userId={userId} />;
-      case 'journey':    return <QuranJourney userId={userId} />;
-      case 'dna':        return <SpiritualDNA userId={userId} />;
-      case 'analytics':  return <AdvancedAnalytics userId={userId} />;
-      case 'community':  return <CommunityHub userId={userId} />;
-      default:           return <LifeTimeline userId={userId} />;
+      case 'timeline': return <LifeTimeline userId={userId} />;
+      case 'mirror': return <EmotionMirror userId={userId} />;
+      case 'quran': return <QuranBrowser userId={userId} />;
+      case 'journey': return <QuranJourney userId={userId} />;
+      case 'dna': return <SpiritualDNA userId={userId} />;
+      case 'analytics': return <AdvancedAnalytics userId={userId} />;
+      case 'community': return <CommunityHub userId={userId} />;
+      default: return <LifeTimeline userId={userId} />;
     }
   };
 
@@ -96,23 +94,36 @@ function AppContent() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Welcome Banner */}
+    <div className="min-h-screen flex flex-col bg-white">
+      {/* Navigation - Fixed at top */}
+      <Navigation 
+        currentView={currentView} 
+        setCurrentView={handleViewChange} 
+        userData={safeUserData} 
+      />
+
+      {/* Welcome Banner - positioned directly after navbar with proper spacing */}
       <AnimatePresence>
         {showWelcome && (
           <motion.div
-            initial={{ y: -80, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -80, opacity: 0 }}
-            className="fixed top-16 left-0 right-0 z-40 bg-gradient-to-r from-emerald-600 to-teal-600 text-white"
+            initial={{ height: 0, opacity: 0, y: -20 }}
+            animate={{ height: 'auto', opacity: 1, y: 0 }}
+            exit={{ height: 0, opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white overflow-hidden flex-shrink-0 relative z-10"
           >
-            <div className="max-w-7xl mx-auto px-4 py-3">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <FiStar className="text-white/80" size={16} />
-                  <span className="text-sm font-medium">Welcome to Echoes of Jannah</span>
+                  <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                    <FiStar className="text-white/90" size={14} />
+                  </div>
+                  <span className="text-sm font-medium">Welcome to Echoes of Jannah — your spiritual journey begins here</span>
                 </div>
-                <button onClick={() => setShowWelcome(false)} className="text-white/70 hover:text-white transition-colors">
+                <button 
+                  onClick={() => setShowWelcome(false)} 
+                  className="text-white/70 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/10"
+                >
                   <FiX size={16} />
                 </button>
               </div>
@@ -121,100 +132,101 @@ function AppContent() {
         )}
       </AnimatePresence>
 
-      <Navigation
-        currentView={currentView}
-        setCurrentView={handleViewChange}
-        userData={safeUserData}
-      />
-
-      <main className="pt-20 pb-16 px-4">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentView}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2 }}
-            className="max-w-7xl mx-auto"
-          >
-            {currentView !== 'community' &&
-             currentView !== 'quran' &&
-             currentView !== 'analytics' &&
-             currentView !== 'journey' ? (
-              <div className="grid lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2">
-                  {renderView()}
-                </div>
-                <div className="hidden lg:block space-y-6">
-                  <DailyChallenge userId={userId} />
-                  <ReflectionPost userId={userId} compact={true} />
-
-                  {/* Quick Stats Card */}
-                  <div className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
-                    <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-                      <FiStar size={12} className="text-emerald-500" />
-                      Quick Stats
-                    </h4>
-                    <div className="space-y-3 text-sm">
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-500">Today's Reflections</span>
-                        <span className="text-gray-900 font-medium">{safeUserData.reflections?.length || 0}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-500">Current Streak</span>
-                        <span className="text-gray-900 font-medium">{safeUserData.streak} days</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-500">Spiritual Level</span>
-                        <span className="text-gray-900 font-medium">{safeUserData.level}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-500">Total XP</span>
-                        <span className="text-gray-900 font-medium">{safeUserData.xp} XP</span>
-                      </div>
-
-                      {isAuthenticated ? (
-                        <div className="flex justify-between items-center pt-3 border-t border-gray-100">
-                          <span className="text-gray-500 text-xs">Quran Foundation</span>
-                          <span className="text-emerald-600 text-xs font-medium flex items-center gap-1">
-                            <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-                            ✓ Connected
-                          </span>
-                        </div>
-                      ) : (
-                        <div className="flex justify-between items-center pt-3 border-t border-gray-100">
-                          <span className="text-gray-400 text-xs">Quran Foundation</span>
-                          <span className="text-gray-400 text-xs">Sign in to connect</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              renderView()
-            )}
-          </motion.div>
-        </AnimatePresence>
+      {/* MAIN CONTENT - with proper spacing */}
+      <main className="flex-1 w-full">
+        <div className="w-full">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentView}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2 }}
+            >
+              {renderView()}
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-gray-100 py-8 mt-8">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <p className="text-gray-400 text-xs">
-            © 2026 Echoes of Jannah — Transforming hearts through the words of Allah
-          </p>
-          <p className="text-gray-400 text-xs mt-1">Powered by Quran Foundation API</p>
-          {isAuthenticated ? (
-            <p className="text-emerald-600 text-xs mt-2 flex items-center justify-center gap-1">
-              <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
-              ✓ Authenticated with Quran Foundation as {user?.name || user?.email || 'User'}
+      {/* FOOTER */}
+      <footer className="bg-gray-900 text-white w-full flex-shrink-0">
+        <div className="px-6 sm:px-8 py-12 md:py-16 max-w-7xl mx-auto">
+          {/* Logo & Brand Section */}
+          <div className="flex flex-col items-center text-center mb-12 md:mb-16">
+            <img 
+              src="/logo.png" 
+              alt="Echoes of Jannah Logo" 
+              className="h-16 md:h-20 w-auto mb-4 object-contain"
+              onError={(e) => {
+                e.target.style.display = 'none';
+              }}
+            />
+            <h2 className="text-2xl md:text-3xl font-serif font-bold mb-3 bg-gradient-to-r from-white to-emerald-300 bg-clip-text text-transparent">
+              Echoes of Jannah
+            </h2>
+            <p className="text-gray-400 text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+              Pakistan's leading spiritual wellness platform connecting hearts with the timeless wisdom of the Quran.
             </p>
-          ) : (
-            <p className="text-gray-400 text-xs mt-2">
-              Sign in to sync your reflections with Quran Foundation
-            </p>
-          )}
+          </div>
+
+          {/* Footer Links Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-16 mb-12 md:mb-16">
+            {/* Quick Links */}
+            <div>
+              <h4 className="font-bold uppercase text-xs tracking-wider text-emerald-400 mb-5">Quick Links</h4>
+              <ul className="space-y-3 text-base text-gray-400">
+                <li><button onClick={() => handleViewChange('timeline')} className="hover:text-emerald-400 transition-colors block">Home</button></li>
+                <li><button onClick={() => handleViewChange('mirror')} className="hover:text-emerald-400 transition-colors block">Heart Mirror</button></li>
+                <li><button onClick={() => handleViewChange('quran')} className="hover:text-emerald-400 transition-colors block">Holy Quran</button></li>
+                <li><button onClick={() => handleViewChange('journey')} className="hover:text-emerald-400 transition-colors block">Life Companion</button></li>
+                <li><button onClick={() => handleViewChange('dna')} className="hover:text-emerald-400 transition-colors block">Spiritual DNA</button></li>
+              </ul>
+            </div>
+
+            {/* Resources */}
+            <div>
+              <h4 className="font-bold uppercase text-xs tracking-wider text-emerald-400 mb-5">Resources</h4>
+              <ul className="space-y-3 text-base text-gray-400">
+                <li><a href="#" className="hover:text-emerald-400 transition-colors block">Blog</a></li>
+                <li><a href="#" className="hover:text-emerald-400 transition-colors block">Reflections</a></li>
+                <li><button onClick={() => handleViewChange('analytics')} className="hover:text-emerald-400 transition-colors block">Analytics</button></li>
+                <li><button onClick={() => handleViewChange('community')} className="hover:text-emerald-400 transition-colors block">Community Events</button></li>
+              </ul>
+            </div>
+
+            {/* Support */}
+            <div>
+              <h4 className="font-bold uppercase text-xs tracking-wider text-emerald-400 mb-5">Support</h4>
+              <ul className="space-y-3 text-base text-gray-400">
+                <li><a href="#" className="hover:text-emerald-400 transition-colors block">Help Center</a></li>
+                <li><a href="#" className="hover:text-emerald-400 transition-colors block">Contact Us</a></li>
+                <li><a href="#" className="hover:text-emerald-400 transition-colors block">Privacy Policy</a></li>
+                <li><a href="#" className="hover:text-emerald-400 transition-colors block">Terms of Service</a></li>
+              </ul>
+            </div>
+
+            {/* Stay Updated */}
+            <div>
+              <h4 className="font-bold uppercase text-xs tracking-wider text-emerald-400 mb-5">Stay Updated</h4>
+              <p className="text-base text-gray-400 mb-4 leading-relaxed">Subscribe for spiritual insights</p>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <input 
+                  type="email" 
+                  placeholder="Enter your email" 
+                  className="px-4 py-3 bg-gray-800 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-emerald-500 text-white placeholder-gray-500 flex-1"
+                />
+                <button className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 rounded-lg transition text-base font-semibold whitespace-nowrap">
+                  Subscribe
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Bar */}
+          <div className="pt-8 border-t border-gray-800 text-center text-sm text-gray-500">
+            <p>&copy; {new Date().getFullYear()} Echoes of Jannah. All rights reserved.</p>
+          </div>
         </div>
       </footer>
     </div>
@@ -224,9 +236,7 @@ function AppContent() {
 function App() {
   return (
     <Routes>
-      {/* OAuth2 callback — must be outside AppContent so Navigation doesn't render */}
       <Route path="/auth/callback" element={<AuthCallback />} />
-      {/* Everything else */}
       <Route path="*" element={<AppContent />} />
     </Routes>
   );

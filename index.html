@@ -6,6 +6,92 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Echoes of Jannah - Transform your relationship with the Quran" />
     <title>Echoes of Jannah</title>
+    
+    <!-- Preconnect for faster font loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- Google Fonts - Quran.com style fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;500;600;700&family=Amiri:wght@400;700&family=Lateef:wght@400;600&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
+     <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
+     
+    <style>
+      /* Global font settings */
+      * {
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+      }
+      
+      /* Arabic font stack matching Quran.com */
+      .font-arabic, 
+      [lang="ar"],
+      .arabic-text {
+        font-family: 'Scheherazade New', 'Amiri', 'Lateef', 'Noto Naskh Arabic', 'Traditional Arabic', 'Times New Roman', serif;
+        font-weight: 400;
+        line-height: 1.8;
+      }
+      
+      /* English font */
+      .font-english,
+      .english-text {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+      
+      /* Smooth scrolling */
+      html {
+        scroll-behavior: smooth;
+      }
+      
+      /* Better focus styles */
+      :focus {
+        outline: none;
+      }
+      
+      :focus-visible {
+        outline: 2px solid #10b981;
+        outline-offset: 2px;
+      }
+      
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+      }
+      
+      ::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 10px;
+      }
+      
+      ::-webkit-scrollbar-thumb:hover {
+        background: #a8a8a8;
+      }
+      
+      /* Selection color */
+      ::selection {
+        background-color: #10b98120;
+        color: #065f46;
+      }
+      
+      ::-moz-selection {
+        background-color: #10b98120;
+        color: #065f46;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>

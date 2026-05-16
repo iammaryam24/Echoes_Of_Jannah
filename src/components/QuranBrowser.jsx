@@ -1,47 +1,39 @@
-// src/components/QuranBrowser.jsx - COMPLETE WITH WORKING AUDIO
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { motion, AnimatePresence } from "framer-motion";
 import { 
   FiSearch, FiBook, FiChevronLeft, FiBookmark, 
-  FiShare2, FiInfo, FiX, FiLoader, FiHeart,
-  FiChevronRight, FiVolume2, FiClock, FiGrid,
+  FiInfo, FiX, FiLoader, FiHeart,
+  FiChevronRight, FiClock, FiGrid,
   FiList, FiPlay, FiPause, FiCopy, FiCheck,
   FiArrowUp, FiMaximize, FiMinimize, FiHeadphones,
-  FiVolumeX, FiZap, FiStar
+  FiZap, FiStar
 } from 'react-icons/fi';
 import { useUser } from '../contexts/UserContext';
 import toast from 'react-hot-toast';
 
 const API_BASE = 'https://api.alquran.cloud/v1';
 
-const surahGradients = [
-  'from-emerald-50 to-teal-50',
-  'from-blue-50 to-cyan-50',
-  'from-purple-50 to-pink-50',
-  'from-amber-50 to-orange-50',
-  'from-rose-50 to-red-50',
-  'from-indigo-50 to-purple-50',
-];
+const BISMILLAH = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ";
 
-// Audio reciters available with working URLs
 const reciters = [
-  { id: 'ar.alafasy', name: 'Mishary Alafasy', baseUrl: 'https://everyayah.com/data/Alafasy_128kbps/' },
-  { id: 'ar.abdurrahmaansudais', name: 'Abdurrahman Sudais', baseUrl: 'https://everyayah.com/data/Abdurrahmaan_As-Sudais_192kbps/' },
-  { id: 'ar.hudhaify', name: 'Ali Hudhaify', baseUrl: 'https://everyayah.com/data/hudhaify_64kbps/' },
-  { id: 'ar.mahermuaiqly', name: 'Maher Al-Muaiqly', baseUrl: 'https://everyayah.com/data/MaherAlMuaiqly128kbps/' },
+  { id: 'ar.alafasy', name: 'Mishary Alafasy', sub: 'Traditional', baseUrl: 'https://everyayah.com/data/Alafasy_128kbps/' },
+  { id: 'ar.abdurrahmaansudais', name: 'Abdurrahman Sudais', sub: 'Makkah', baseUrl: 'https://everyayah.com/data/Abdurrahmaan_As-Sudais_192kbps/' },
+  { id: 'ar.shuraym', name: 'Saud Al-Shuraim', sub: 'Haramain', baseUrl: 'https://everyayah.com/data/Saood_ash-Shuraym_128kbps/' },
+  { id: 'ar.husary', name: 'Khalil Al-Husary', sub: 'Classic', baseUrl: 'https://everyayah.com/data/Husary_128kbps/' },
+  { id: 'ar.minshawi', name: 'Siddiq Al-Minshawi', sub: 'Classic', baseUrl: 'https://everyayah.com/data/Minshawy_Murattal_128kbps/' },
+  { id: 'ar.abdulbasit', name: 'Abdul Basit', sub: 'Legendary', baseUrl: 'https://everyayah.com/data/AbdulSamad_64kbps_QuranExplorer.Com/' },
+  { id: 'ar.jibreel', name: 'Muhammad Jibreel', sub: 'Emotional', baseUrl: 'https://everyayah.com/data/Muhammad_Jibreel_128kbps/' },
 ];
 
 export default function QuranBrowser() {
-  const { userId, addXP } = useUser();
+  const { userId, addXP, profile, addPatienceXP, addUserActivity } = useUser();
   const [surahs, setSurahs] = useState([]);
   const [filteredSurahs, setFilteredSurahs] = useState([]);
   const [selectedSurah, setSelectedSurah] = useState(null);
   const [verses, setVerses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
   const [bookmarkedVerses, setBookmarkedVerses] = useState({});
-  const [selectedVerse, setSelectedVerse] = useState(null);
   const [showTafsir, setShowTafsir] = useState(null);
   const [loadingVerses, setLoadingVerses] = useState(false);
   const [favorites, setFavorites] = useState([]);
@@ -59,7 +51,7 @@ export default function QuranBrowser() {
   const [audioError, setAudioError] = useState({});
   
   const versesContainerRef = useRef(null);
-  const audioRef = useRef(null);
+  const verseRefs = useRef({});
 
   const availableTranslations = [
     { id: 'en.sahih', name: 'Sahih International' },
@@ -67,6 +59,61 @@ export default function QuranBrowser() {
     { id: 'en.pickthall', name: 'Pickthall' },
     { id: 'en.ahmedali', name: 'Ahmed Ali' },
   ];
+
+  const getSurahIntroduction = (num) => {
+    const data = {
+      1: { 
+        intro: "Al-Fatihah, 'The Opening', is the first chapter of the Quran.",
+        background: "Revealed in Makkah, it serves as a core prayer in every Rakat of Salah.",
+        facts: ["7 verses long", "Known as Umm al-Kitab", "Essence of the entire Quran"]
+      },
+      2: {
+        intro: "Al-Baqarah, 'The Cow', is the longest chapter of the Quran.",
+        background: "Revealed in Madinah over several years, covering law and theology.",
+        facts: ["Contains Ayat al-Kursi", "286 verses", "Last two verses have special protection"]
+      },
+      18: {
+        intro: "The Cave. A source of protection from the trials of the end times.",
+        background: "Revealed in Makkah to answer three questions posed by the Quraysh.",
+        facts: ["Protection from Dajjal", "Read every Friday for light", "Contains four major stories of trial"]
+      },
+      36: {
+        intro: "Ya-Sin, often called the 'Heart of the Quran'.",
+        background: "Makkan surah focusing on the existence of Allah and the resurrection.",
+        facts: ["Special recitation for the dying", "Focuses on the spiritual nature of creation", "Emphasizes the Quran as a divine revelation"]
+      },
+      55: {
+        intro: "The Most Merciful. Known as the 'Bride of the Quran'.",
+        background: "Focuses on the countless favors of Allah bestowed upon humans and jinn.",
+        facts: ["Repeats the verse 'Which of the favors of your Lord would you deny?' 31 times", "Mentions both Jinn and Mankind", "Describes the beauty of Jannah"]
+      },
+      67: {
+        intro: "The Sovereignty. A source of protection in the grave.",
+        background: "Meccan surah encouraging reflection on the vastness of creation.",
+        facts: ["Intercedes for its reciter until they are forgiven", "Prophet ﷺ wouldn't sleep until he read it", "Focuses on the power and life of the universe"]
+      },
+      114: {
+        intro: "An-Nas, 'Mankind', the final chapter.",
+        background: "Seeking refuge in Allah from the whispers of evil.",
+        facts: ["Part of the 'Mu'awwidhatayn'", "Shortest verse count in some contexts"]
+      }
+    };
+    return data[num] || { 
+      intro: "A divine revelation guiding humanity toward the straight path.",
+      background: "A sacred transmission from the celestial realm.",
+      facts: ["Sacred frequency active", "Contains deep spiritual wisdom", "Timeless guidance for those who reflect"]
+    };
+  };
+
+  useEffect(() => {
+    if (audioPlaying && versesContainerRef.current) {
+      const [, verseNum] = audioPlaying.split('_');
+      const verseElement = verseRefs.current[verseNum];
+      if (verseElement) {
+        verseElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  }, [audioPlaying]);
 
   useEffect(() => {
     loadSurahs();
@@ -127,11 +174,10 @@ export default function QuranBrowser() {
         }));
         setSurahs(surahsList);
         setFilteredSurahs(surahsList);
-        toast.success(`📖 ${surahsList.length} surahs loaded`);
       }
     } catch (error) {
       console.error('Error loading surahs:', error);
-      toast.error('Failed to load surahs');
+      toast.error('Failed to connect to the divine source');
     }
     setLoading(false);
   };
@@ -163,9 +209,17 @@ export default function QuranBrowser() {
           const paddedSurah = surahNumber.toString().padStart(3, '0');
           const paddedVerse = ayah.numberInSurah.toString().padStart(3, '0');
           
+          let arabicText = ayah.text;
+          
+          if (index === 0 && surahNumber !== 1 && surahNumber !== 9) {
+            if (arabicText.startsWith(BISMILLAH)) {
+              arabicText = arabicText.substring(BISMILLAH.length).trim();
+            }
+          }
+          
           return {
             number: ayah.numberInSurah,
-            arabic: ayah.text,
+            arabic: arabicText,
             translation: englishEdition?.ayahs[index]?.text || 'Translation loading...',
             juz: ayah.juz,
             page: ayah.page,
@@ -188,13 +242,36 @@ export default function QuranBrowser() {
         setVerses(versesList);
         saveToRecent(surahNumber);
         
-        toast.success(`${surahInfo.englishName} • ${versesList.length} verses`);
+        setTimeout(() => {
+          if (versesContainerRef.current) {
+            versesContainerRef.current.scrollTo({ top: 0, behavior: 'auto' });
+          }
+        }, 100);
       }
     } catch (error) {
       console.error('Error loading surah:', error);
-      toast.error('Failed to load surah verses');
+      toast.error('Failed to load sacred verses');
     }
     setLoadingVerses(false);
+  };
+
+  const handleReciterChange = (reciterId) => {
+    setSelectedReciter(reciterId);
+    setShowReciterMenu(false);
+    
+    if (currentAudio) {
+      currentAudio.pause();
+      setAudioPlaying(null);
+      setCurrentAudio(null);
+    }
+    
+    if (selectedSurah) {
+      loadSurah(selectedSurah.number);
+    }
+    
+    const selectedReciterName = reciters.find(r => r.id === reciterId)?.name || 'Unknown';
+    toast.success(`🎤 Switched to ${selectedReciterName}`);
+    if (addUserActivity) addUserActivity('reciter_changed');
   };
 
   const handleTranslationChange = (translationId) => {
@@ -204,13 +281,116 @@ export default function QuranBrowser() {
     }
   };
 
-  const handleReciterChange = (reciterId) => {
-    setSelectedReciter(reciterId);
-    setShowReciterMenu(false);
-    if (selectedSurah) {
-      loadSurah(selectedSurah.number);
+  const handlePlayAudio = (surahNumber, verseNumber, audioUrl) => {
+    const key = `${surahNumber}_${verseNumber}`;
+    
+    if (audioPlaying === key && currentAudio) {
+      currentAudio.pause();
+      setAudioPlaying(null);
+      setCurrentAudio(null);
+      return;
     }
-    toast.success(`🎤 Reciter changed to ${reciters.find(r => r.id === reciterId)?.name}`);
+    
+    if (currentAudio) {
+      currentAudio.pause();
+      setCurrentAudio(null);
+    }
+    
+    setAudioError(prev => ({ ...prev, [key]: false }));
+    setAudioLoading(prev => ({ ...prev, [key]: true }));
+    
+    const audio = new Audio(audioUrl);
+    
+    audio.oncanplaythrough = () => {
+      setAudioLoading(prev => ({ ...prev, [key]: false }));
+      audio.play().catch(err => {
+        console.error('Audio play error:', err);
+        setAudioError(prev => ({ ...prev, [key]: true }));
+        toast.error('Could not play audio. Trying alternative source...');
+      });
+      setCurrentAudio(audio);
+      setAudioPlaying(key);
+      
+      const verseElement = verseRefs.current[verseNumber];
+      if (verseElement) {
+        verseElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    };
+    
+    audio.onerror = () => {
+      setAudioLoading(prev => ({ ...prev, [key]: false }));
+      setAudioError(prev => ({ ...prev, [key]: true }));
+      toast.error('Voice not available for this verse');
+    };
+    
+    audio.onended = () => {
+      setAudioPlaying(null);
+      setCurrentAudio(null);
+    };
+  };
+
+  const handlePlayFullSurah = () => {
+    if (!verses.length || !selectedSurah) return;
+    
+    if (currentAudio) {
+      currentAudio.pause();
+      setCurrentAudio(null);
+      setAudioPlaying(null);
+      return;
+    }
+
+    let currentIndex = 0;
+    toast.success(`🎵 Playing ${selectedSurah.englishName}...`);
+    
+    const playNext = () => {
+      if (currentIndex >= verses.length) {
+        setAudioPlaying(null);
+        setCurrentAudio(null);
+        toast.success("✨ Alhamdulillah, Surah completion achieved!");
+        if (addXP) addXP(50);
+        if (addUserActivity) addUserActivity('surah_completed');
+        return;
+      }
+      
+      const verse = verses[currentIndex];
+      const audioKey = `${selectedSurah.number}_${verse.number}`;
+      
+      if (addPatienceXP) addPatienceXP(1);
+      setAudioLoading(prev => ({ ...prev, [audioKey]: true }));
+      setAudioPlaying(audioKey); 
+      
+      const audio = new Audio(verse.audioUrl);
+      setCurrentAudio(audio);
+      
+      const verseElement = verseRefs.current[verse.number];
+      if (verseElement) {
+        verseElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      
+      audio.oncanplaythrough = () => {
+        setAudioLoading(prev => ({ ...prev, [audioKey]: false }));
+        audio.play().catch(e => {
+          console.error("Audio play error", e);
+          setAudioError(prev => ({ ...prev, [audioKey]: true }));
+          currentIndex++;
+          playNext();
+        });
+      };
+      
+      audio.onended = () => {
+        currentIndex++;
+        playNext();
+      };
+      
+      audio.onerror = () => {
+        setAudioLoading(prev => ({ ...prev, [audioKey]: false }));
+        setAudioError(prev => ({ ...prev, [audioKey]: true }));
+        currentIndex++;
+        playNext();
+      };
+    };
+    
+    playNext();
   };
 
   const saveToRecent = (surahNumber) => {
@@ -222,31 +402,6 @@ export default function QuranBrowser() {
   const loadRecentSurahs = () => {
     const saved = localStorage.getItem(`quran_recent_${userId}`);
     if (saved) setRecentSurahs(JSON.parse(saved));
-  };
-
-  const searchQuran = async (query) => {
-    try {
-      const results = [];
-      const searchLower = query.toLowerCase();
-      
-      for (const surah of surahs) {
-        if (surah.englishName.toLowerCase().includes(searchLower) ||
-            surah.name.includes(searchLower)) {
-          results.push({
-            surahNumber: surah.number,
-            verseNumber: 1,
-            text: surah.name,
-            translation: `${surah.englishName} - ${surah.versesCount} verses`,
-            isSurah: true
-          });
-        }
-      }
-      
-      return results.slice(0, 30);
-    } catch (error) {
-      console.error('Search error:', error);
-      return [];
-    }
   };
 
   const loadBookmarks = () => {
@@ -264,21 +419,6 @@ export default function QuranBrowser() {
     if (saved) setFavorites(JSON.parse(saved));
   };
 
-  const handleSearch = async () => {
-    if (!searchQuery.trim()) {
-      setSearchResults([]);
-      return;
-    }
-    
-    const results = await searchQuran(searchQuery);
-    setSearchResults(results);
-    if (results.length === 0) {
-      toast.error('No results found');
-    } else {
-      toast.success(`Found ${results.length} results`);
-    }
-  };
-
   const handleBookmark = (surahNumber, verseNumber) => {
     const key = `${surahNumber}_${verseNumber}`;
     const bookmarks = JSON.parse(localStorage.getItem(`quran_bookmarks_${userId}`) || '[]');
@@ -292,8 +432,9 @@ export default function QuranBrowser() {
       bookmarks.push({ id: Date.now(), verseKey: key, surahNumber, verseNumber });
       localStorage.setItem(`quran_bookmarks_${userId}`, JSON.stringify(bookmarks));
       setBookmarkedVerses(prev => ({ ...prev, [key]: true }));
-      toast.success(`✨ Verse ${verseNumber} bookmarked! +5 XP`);
-      if (addXP) addXP(5);
+      toast.success('✨ Verse bookmarked! +10 XP');
+      if (addUserActivity) addUserActivity('verse_bookmarked');
+      if (addXP) addXP(10);
     }
   };
 
@@ -315,7 +456,7 @@ export default function QuranBrowser() {
     setShowTafsir({ 
       surah: surahNumber, 
       verse: verseNumber, 
-      text: 'Loading tafsir...', 
+      text: 'Seeking deep wisdom...', 
       arabic, 
       translation, 
       loading: true 
@@ -328,27 +469,10 @@ export default function QuranBrowser() {
       if (data.code === 200 && data.data) {
         setShowTafsir(prev => ({ ...prev, text: data.data.text, loading: false }));
       } else {
-        const fallbackResponse = await fetch(`${API_BASE}/tafsir/168/${surahNumber}/${verseNumber}`);
-        const fallbackData = await fallbackResponse.json();
-        
-        if (fallbackData.code === 200 && fallbackData.data) {
-          setShowTafsir(prev => ({ ...prev, text: fallbackData.data.text, loading: false }));
-        } else {
-          setShowTafsir(prev => ({ ...prev, text: 'Tafsir not available for this verse.', loading: false }));
-        }
+        setShowTafsir(prev => ({ ...prev, text: 'No detailed tafsir found for this selection.', loading: false }));
       }
     } catch (error) {
-      setShowTafsir(prev => ({ ...prev, text: 'Unable to load tafsir. Please try again.', loading: false }));
-    }
-  };
-
-  const handleShare = (surahNumber, verseNumber, translation) => {
-    const shareText = `"${translation?.substring(0, 300)}..."\n\n— Surah ${surahNumber}, Verse ${verseNumber}\n\nvia Echoes of Jannah`;
-    if (navigator.share) {
-      navigator.share({ title: 'Quran Verse', text: shareText }).catch(() => {});
-    } else {
-      navigator.clipboard.writeText(shareText);
-      toast.success('Verse copied to clipboard!');
+      setShowTafsir(prev => ({ ...prev, text: 'The path to this wisdom is temporarily blocked.', loading: false }));
     }
   };
 
@@ -356,122 +480,8 @@ export default function QuranBrowser() {
     const text = `${verse.arabic}\n\n${verse.number}. ${translation}`;
     navigator.clipboard.writeText(text);
     setCopiedVerse(verse.number);
-    toast.success('Verse copied!', { icon: '📋' });
+    toast.success('Verse copied to clipboard!', { icon: '📋' });
     setTimeout(() => setCopiedVerse(null), 2000);
-  };
-
-  const handlePlayAudio = async (surahNumber, verseNumber, audioUrl) => {
-    const key = `${surahNumber}_${verseNumber}`;
-    
-    if (audioPlaying === key && currentAudio) {
-      currentAudio.pause();
-      setAudioPlaying(null);
-      setCurrentAudio(null);
-      return;
-    }
-    
-    if (currentAudio) {
-      currentAudio.pause();
-      setCurrentAudio(null);
-    }
-    
-    setAudioError(prev => ({ ...prev, [key]: false }));
-    setAudioLoading(prev => ({ ...prev, [key]: true }));
-    
-    try {
-      const audio = new Audio();
-      
-      audio.oncanplaythrough = () => {
-        setAudioLoading(prev => ({ ...prev, [key]: false }));
-        audio.play().catch(err => {
-          console.error('Play error:', err);
-          setAudioError(prev => ({ ...prev, [key]: true }));
-          toast.error('Could not play audio');
-        });
-        setCurrentAudio(audio);
-        setAudioPlaying(key);
-      };
-      
-      audio.onerror = () => {
-        setAudioLoading(prev => ({ ...prev, [key]: false }));
-        setAudioError(prev => ({ ...prev, [key]: true }));
-        toast.error('Audio not available for this verse');
-      };
-      
-      audio.onended = () => {
-        setAudioPlaying(null);
-        setCurrentAudio(null);
-      };
-      
-      audio.src = audioUrl;
-      audio.load();
-      
-    } catch (error) {
-      setAudioLoading(prev => ({ ...prev, [key]: false }));
-      setAudioError(prev => ({ ...prev, [key]: true }));
-      toast.error('Failed to load audio');
-    }
-  };
-
-  const handlePlayFullSurah = () => {
-    if (!verses.length) return;
-    
-    const fullSurahKey = `surah_${selectedSurah.number}`;
-    
-    if (audioPlaying === fullSurahKey && currentAudio) {
-      currentAudio.pause();
-      setAudioPlaying(null);
-      setCurrentAudio(null);
-      return;
-    }
-    
-    if (currentAudio) {
-      currentAudio.pause();
-    }
-    
-    toast.success(`🎧 Playing full Surah ${selectedSurah.englishName}`);
-    
-    let currentIndex = 0;
-    
-    const playNext = () => {
-      if (currentIndex < verses.length) {
-        const verse = verses[currentIndex];
-        const audio = new Audio(verse.audioUrl);
-        
-        audio.onended = () => {
-          currentIndex++;
-          playNext();
-        };
-        
-        audio.onerror = () => {
-          console.error(`Error playing verse ${verse.number}`);
-          currentIndex++;
-          playNext();
-        };
-        
-        audio.play().catch(err => {
-          console.error('Play error:', err);
-          currentIndex++;
-          playNext();
-        });
-        
-        setCurrentAudio(audio);
-        setAudioPlaying(fullSurahKey);
-      } else {
-        setAudioPlaying(null);
-        setCurrentAudio(null);
-        toast.success('✨ Surah completed!');
-      }
-    };
-    
-    playNext();
-  };
-
-  const handleSurahClick = (surahNumber) => {
-    loadSurah(surahNumber);
-    if (versesContainerRef.current) {
-      versesContainerRef.current.scrollTop = 0;
-    }
   };
 
   const scrollToTop = () => {
@@ -480,119 +490,214 @@ export default function QuranBrowser() {
     }
   };
 
-  const getSurahName = (number) => {
-    const surah = surahs.find(s => s.number === number);
-    return surah?.englishName || `Surah ${number}`;
-  };
-
-  const getRandomGradient = (index) => {
-    return surahGradients[index % surahGradients.length];
-  };
-
   const toggleFullscreen = () => {
     setFullscreenMode(!fullscreenMode);
   };
 
+  const handleSurahClick = (surahNumber) => {
+    loadSurah(surahNumber);
+  };
+
   if (loading) {
     return (
-      <div className="h-full w-full flex items-center justify-center bg-gray-50">
+      <div className="h-full w-full flex flex-col items-center justify-center bg-gradient-to-br from-emerald-50 via-teal-50 to-green-50">
         <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative text-center"
         >
-          <div className="relative">
-            <div className="absolute inset-0 bg-emerald-100 rounded-full blur-2xl animate-pulse" />
-            <FiLoader className="animate-spin text-emerald-500 mx-auto mb-4 relative z-10" size={48} />
+          <div className="w-24 h-24 bg-gradient-to-br from-[#059669] to-teal-500 rounded-full flex items-center justify-center mx-auto mb-6 relative shadow-2xl shadow-[#059669]/50">
+            <div className="absolute inset-0 border-4 border-[#059669]/30 rounded-full animate-ping opacity-30" />
+            <FiBook className="text-white" size={40} />
           </div>
-          <p className="text-gray-600 text-base font-medium">Loading the Holy Quran...</p>
-          <p className="text-gray-400 text-sm mt-2">Connecting to AlQuran Cloud API</p>
+          <h3 className="text-xl font-bold text-[#059669] font-serif">Illuminating Pages</h3>
+          <p className="text-[#059669]/60 text-sm mt-1 max-w-xs">Preparing your spiritual sanctuary...</p>
+          <div className="mt-8 flex justify-center gap-1">
+             {[...Array(3)].map((_, i) => (
+                <motion.div 
+                  key={i}
+                  animate={{ scale: [1, 1.5, 1], opacity: [0.3, 1, 0.3] }}
+                  transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.2 }}
+                  className="w-3 h-3 bg-[#059669] rounded-full shadow-lg shadow-[#059669]/50"
+                />
+             ))}
+          </div>
         </motion.div>
       </div>
     );
   }
 
   return (
-   <div className="h-full w-full flex flex-col bg-gray-50">
-      {/* Header */}
-      {!fullscreenMode && (
-        <div className="flex-shrink-0 px-4 pt-4 pb-3 border-b border-gray-200 bg-white">
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-3"
-          >
-            <div className="inline-flex items-center gap-2 bg-emerald-50 px-5 py-2 rounded-full mb-4">
-              <FiStar className="text-emerald-500" size={14} />
-              <span className="text-sm text-emerald-600 font-medium">The Holy Quran • 114 Chapters</span>
+<div className={`h-full w-full flex-col bg-gradient-to-br from-[#013524] via-white to-teal-50 transition-all duration-700 ${fullscreenMode ? 'fixed inset-0 z-[9999]' : ''} ${profile?.theme === 'dark' ? 'dark bg-gradient-to-br from-[#013524] via-gray-900 to-teal-950 text-white' : ''}`}>
+      <header className="flex-shrink-0 bg-[#013524] backdrop-blur-xl border-b border-[#013524]/30 dark:border-[#013524]/30 px-8 lg:px-16 py-8 flex flex-col lg:flex-row lg:items-center justify-between gap-8 relative z-30 shadow-2xl shadow-[#013524]/20">
+        <div className="flex items-center gap-8">
+          {!selectedSurah ? (
+            <div className="space-y-1">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-2xl rotate-3 transition-transform hover:rotate-0 border-2 border-white/20">
+                  <FiBook size={28} className="text-[#013524]" />
+                </div>
+                <div>
+                  <h1 className="text-4xl font-black text-white tracking-tighter font-serif leading-none drop-shadow-lg">QURAN <span className="text-white/80 italic">DNA</span></h1>
+                  <p className="text-[9px] text-white/80 font-black uppercase tracking-[0.4em] mt-1">Digital Spiritual Sanctuary</p>
+                </div>
+              </div>
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-600 bg-clip-text text-transparent">
-              Explore the Quran
-            </h2>
-            <p className="text-gray-500 text-sm mt-1">Read, reflect, and connect with the divine words of Allah</p>
-          </motion.div>
+          ) : (
+            <button 
+              onClick={() => { setSelectedSurah(null); setVerses([]); setFullscreenMode(false); }}
+              className="group flex items-center gap-6 py-3 pr-12 pl-3 hover:bg-white/20 rounded-[2.5rem] text-white transition-all duration-500 border-2 border-white/20 hover:border-white/40 overflow-hidden"
+            >
+              <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
+                <FiChevronLeft size={28} className="text-[#059669]" />
+              </div>
+              <div className="text-left">
+                <span className="block font-black text-[11px] uppercase tracking-[0.4em] text-white/80 group-hover:translate-x-1 transition-transform">Return to</span>
+                <span className="block font-black text-xl tracking-tighter">THE ARCHIVES</span>
+              </div>
+            </button>
+          )}
+        </div>
 
-          {/* Search Bar */}
-          <div className="flex gap-2">
-            <div className="flex-1 relative">
-              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-              <input
-                type="text"
+        {!selectedSurah && (
+          <div className="flex-1 max-w-3xl flex gap-6">
+            <div className="relative flex-1 group">
+              <FiSearch className="absolute left-8 top-1/2 -translate-y-1/2 text-white/60 group-focus-within:text-white transition-colors" size={24} />
+              <input 
+                type="text" 
+                placeholder="Identify chapter frequency..."
+                className="w-full bg-white/20 backdrop-blur-md border-2 border-white/30 rounded-[3rem] py-6 pl-20 pr-10 outline-none focus:bg-white/30 focus:ring-8 focus:ring-white/20 focus:border-white/50 transition-all text-lg font-bold text-white placeholder:text-white/50"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                placeholder="Search surah name or number..."
-                className="w-full pl-9 pr-8 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 transition-all"
               />
-              {searchQuery && (
-                <button onClick={() => setSearchQuery('')} className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                  <FiX size={14} />
-                </button>
-              )}
             </div>
-            <button 
-              onClick={handleSearch} 
-              className="px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl text-sm font-medium text-white hover:shadow-md transition-all flex items-center gap-1.5"
+            <div className="flex bg-white/20 backdrop-blur-md rounded-[2rem] p-2 border-2 border-white/30 h-fit my-auto shadow-inner">
+              <button onClick={() => setViewLayout('grid')} className={`p-4 rounded-2xl transition-all ${viewLayout === 'grid' ? 'bg-white text-[#059669] shadow-2xl scale-110' : 'text-white/60 hover:text-white'}`}>
+                <FiGrid size={24} />
+              </button>
+              <button onClick={() => setViewLayout('list')} className={`p-4 rounded-2xl transition-all ${viewLayout === 'list' ? 'bg-white text-[#059669] shadow-2xl scale-110' : 'text-white/60 hover:text-white'}`}>
+                <FiList size={24} />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {selectedSurah && (
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowReciterMenu(!showReciterMenu);
+                }}
+                className="flex items-center gap-3 px-5 py-3 bg-white/20 backdrop-blur-md border-2 border-white/30 rounded-2xl hover:bg-white/30 hover:border-white/50 transition-all font-bold text-sm text-white active:scale-95 shadow-lg"
+              >
+                <div className="w-7 h-7 bg-white rounded-lg flex items-center justify-center text-[#059669] shadow-md">
+                  <FiHeadphones size={16}/>
+                </div>
+                {reciters.find(r => r.id === selectedReciter)?.name.split(' ')[0] || 'Select'}
+                <FiChevronRight size={14} className={`transition-transform ${showReciterMenu ? 'rotate-90' : ''}`} />
+              </button>
+              
+              <AnimatePresence>
+                {showReciterMenu && (
+                  <>
+                    <div 
+                      className="fixed inset-0 z-40" 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowReciterMenu(false);
+                      }}
+                    />
+                    <motion.div 
+                      initial={{ opacity: 0, y: -10, scale: 0.95 }} 
+                      animate={{ opacity: 1, y: 0, scale: 1 }} 
+                      exit={{ opacity: 0, y: -10, scale: 0.95 }} 
+                      transition={{ duration: 0.2 }}
+                      className="absolute right-0 top-full mt-3 bg-white w-72 rounded-2xl shadow-2xl border-2 border-[#013524]/20 overflow-hidden py-3 z-50"
+                    >
+                      <div className="px-4 py-2 border-b border-[#013524]/10">
+                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#013524]">Select Reciter</p>
+                      </div>
+                      {reciters.map(r => (
+                        <button 
+                          key={r.id} 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleReciterChange(r.id);
+                          }} 
+                          className={`w-full text-left px-5 py-4 text-sm font-bold hover:bg-gradient-to-r hover:from-[#013524]/10 hover:to-[#013524]/5 transition-all flex items-center justify-between group ${
+                            selectedReciter === r.id ? 'bg-[#013524]/10 text-[#059669] border-l-4 border-[#059669]' : 'text-gray-600 border-l-4 border-transparent'
+                          }`}
+                        >
+                          <div className="flex flex-col">
+                            <span className="font-bold">{r.name}</span>
+                            <span className="text-[10px] text-gray-400 font-normal">{r.sub}</span>
+                          </div>
+                          {selectedReciter === r.id && (
+                            <FiCheck size={18} className="text-[#059669]" />
+                          )}
+                          <div className="w-8 h-8 bg-[#059669]/20 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                            <FiHeadphones size={14} className="text-[#059669]" />
+                          </div>
+                        </button>
+                      ))}
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
+
+            <select 
+              value={selectedTranslation} 
+              onChange={(e) => handleTranslationChange(e.target.value)}
+              className="bg-white/20 backdrop-blur-md border-2 border-white/30 rounded-2xl px-5 py-3 text-sm font-bold text-white outline-none focus:bg-white/30 focus:border-white/50 cursor-pointer"
             >
-              <FiSearch size={14} /> Search
+              {availableTranslations.map(t => (
+                <option key={t.id} value={t.id} className="text-gray-900">{t.name}</option>
+              ))}
+            </select>
+            
+            <button 
+              onClick={toggleFullscreen} 
+              className="p-3 bg-white/20 hover:bg-white/30 rounded-2xl text-white hover:text-white transition-all active:scale-90 border-2 border-white/20 hover:border-white/40"
+            >
+              {fullscreenMode ? <FiMinimize size={20}/> : <FiMaximize size={20}/>}
             </button>
           </div>
-        </div>
-      )}
+        )}
+      </header>
 
-      {/* Main Content */}
-      <div className="flex-1 overflow-hidden px-4">
+      <main className="flex-1 overflow-hidden relative">
         {!selectedSurah ? (
-          <div className="h-full overflow-y-auto py-3 space-y-3">
-            {/* Search Results */}
+          <div className="h-full overflow-y-auto px-8 md:px-12 py-12 space-y-20 bg-pattern">
             <AnimatePresence>
-              {searchResults.length > 0 && (
+              {searchQuery.trim() && (
                 <motion.div 
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="bg-white rounded-xl p-3 border border-gray-200 shadow-sm"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="max-w-7xl mx-auto space-y-8"
                 >
-                  <div className="flex justify-between items-center mb-2">
-                    <h3 className="text-sm font-semibold text-emerald-600">
-                      Results ({searchResults.length})
-                    </h3>
-                    <button onClick={() => setSearchResults([])} className="text-gray-400 hover:text-gray-600">
-                      <FiX size={16} />
-                    </button>
-                  </div>
-                  <div className="space-y-1.5 max-h-48 overflow-y-auto">
-                    {searchResults.map((result, idx) => (
+                  <h3 className="text-sm text-[#013524] font-black uppercase tracking-[0.4em] flex items-center gap-4 bg-white/80 backdrop-blur-sm rounded-full px-6 py-3 w-fit border-2 border-[#013524]/20 shadow-lg">
+                    <FiSearch className="text-[#013524]" size={20} />
+                    Portal Discovery
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {filteredSurahs.map((surah) => (
                       <motion.div
-                        key={idx}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: idx * 0.01 }}
-                        onClick={() => handleSurahClick(parseInt(result.surahNumber))}
-                        className="p-2.5 bg-gray-50 rounded-lg cursor-pointer border border-gray-100 hover:border-emerald-300 hover:bg-gray-100 transition-all"
+                        key={surah.number}
+                        whileHover={{ y: -5, scale: 1.02 }}
+                        onClick={() => handleSurahClick(surah.number)}
+                        className="bg-gradient-to-br from-white to-[#013524]/10 p-8 rounded-[2.5rem] border-2 border-[#013524]/30 shadow-lg hover:shadow-2xl hover:border-[#013524] cursor-pointer transition-all flex items-center gap-8 group"
                       >
-                        <p className="font-arabic text-right text-sm text-gray-800">{result.text}</p>
-                        <p className="text-gray-500 text-xs mt-0.5 truncate">{result.translation}</p>
+                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#013524] to-teal-600 text-white flex items-center justify-center font-black shadow-xl shadow-[#013524]/50 group-hover:rotate-6 transition-transform border-2 border-[#013524]">
+                          {surah.number}
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-serif italic font-bold text-[#013524] leading-none text-xl">{surah.englishName}</p>
+                          <p className="font-quran text-2xl text-[#013524] mt-1">{surah.name}</p>
+                        </div>
                       </motion.div>
                     ))}
                   </div>
@@ -600,411 +705,392 @@ export default function QuranBrowser() {
               )}
             </AnimatePresence>
 
-            {/* View Controls & Recent */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1">
-                <button 
-                  onClick={() => setViewLayout('grid')} 
-                  className={`p-1.5 rounded-md transition-all ${viewLayout === 'grid' ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
-                >
-                  <FiGrid size={14} />
-                </button>
-                <button 
-                  onClick={() => setViewLayout('list')} 
-                  className={`p-1.5 rounded-md transition-all ${viewLayout === 'list' ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
-                >
-                  <FiList size={14} />
-                </button>
-              </div>
-              <span className="text-xs text-gray-500">{filteredSurahs.length} surahs</span>
-            </div>
-
-            {/* Recent Surahs */}
-            {recentSurahs.length > 0 && !searchQuery && (
-              <div className="flex items-center gap-2 overflow-x-auto pb-1">
-                <FiClock size={12} className="text-emerald-500 flex-shrink-0" />
-                <div className="flex gap-1.5">
-                  {recentSurahs.map(num => (
-                    <button
-                      key={num}
-                      onClick={() => handleSurahClick(num)}
-                      className="px-2.5 py-1 bg-emerald-50 rounded-full text-xs hover:bg-emerald-100 border border-emerald-200 whitespace-nowrap transition-all text-emerald-700"
-                    >
-                      {getSurahName(num)}
-                    </button>
-                  ))}
+            <div className="max-w-7xl mx-auto">
+              <div className="flex items-center justify-between mb-12">
+                <h3 className="text-sm text-[#013524] font-extrabold uppercase tracking-[0.5em] flex items-center gap-6 bg-white/90 backdrop-blur-sm rounded-full px-8 py-4 border-2 border-[#013524]/20 shadow-lg">
+                  <FiBook className="text-[#013524]" size={20} />
+                  The Eternal Library
+                </h3>
+                <div className="flex items-center gap-4 text-[#013524] text-xs font-black uppercase tracking-widest bg-white/80 px-6 py-3 rounded-full border-2 border-[#013524]/20">
+                  <span>114 Chapters</span>
+                  <div className="w-2 h-2 bg-[#013524] rounded-full shadow-lg shadow-[#013524]/50" />
+                  <span>6236 Verses</span>
                 </div>
               </div>
-            )}
 
-            {/* Surah Grid */}
-            <div className="bg-white rounded-xl p-3 border border-gray-200 shadow-sm">
-              {filteredSurahs.length === 0 && searchQuery ? (
-                <div className="text-center py-8">
-                  <FiSearch className="text-gray-400 mx-auto mb-2" size={32} />
-                  <p className="text-gray-500 text-sm">No surahs found</p>
-                  <button onClick={() => setSearchQuery('')} className="mt-2 text-xs text-emerald-500">
-                    Clear search
-                  </button>
-                </div>
-              ) : (
-                <div className={viewLayout === 'grid' 
-                  ? "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2"
-                  : "space-y-1"
-                }>
+              <AnimatePresence mode='wait'>
+                <motion.div 
+                  key={viewLayout}
+                  initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
+                  transition={{ staggerChildren: 0.05 }}
+                  className={viewLayout === 'grid' 
+                    ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12"
+                    : "grid grid-cols-1 gap-10"
+                  }
+                >
                   {filteredSurahs.map((surah, idx) => (
-                    <motion.button
+                    <motion.div
                       key={surah.number}
-                      initial={{ opacity: 0, y: 8 }}
+                      initial={{ opacity: 0, y: 40 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: Math.min(idx * 0.002, 0.15) }}
-                      whileHover={{ scale: 1.01 }}
-                      whileTap={{ scale: 0.99 }}
+                      transition={{ delay: Math.min(idx * 0.01, 0.4), ease: [0.23, 1, 0.32, 1] }}
+                      whileHover={{ y: -12, scale: 1.02 }}
                       onClick={() => handleSurahClick(surah.number)}
-                      className={`group relative bg-gradient-to-br ${getRandomGradient(idx)} rounded-lg p-2.5 text-left border border-gray-200 hover:border-emerald-300 hover:shadow-md transition-all ${
-                        viewLayout === 'list' ? 'flex items-center gap-3' : ''
+                      className={`group relative rounded-[3rem] p-10 text-left cursor-pointer transition-all border-2 duration-700 overflow-hidden ${
+                        viewLayout === 'grid' ? 'min-h-[350px] flex flex-col justify-between' : 'flex items-center gap-16 py-12 px-20'
+                      } ${
+                        favorites.includes(surah.number) 
+                          ? 'bg-gradient-to-br from-[#059669] to-[#003818] text-white border-[#006630] shadow-[0_40px_80px_-20px_rgba(5,150,105,0.5)]' 
+                          : 'bg-[#059669] dark:bg-[#059669] text-white border-[#006630] dark:border-[#006630] hover:border-[#008040] hover:shadow-[0_50px_120px_-30px_rgba(5,150,105,0.3)] shadow-lg'
                       }`}
                     >
-                      <div className={`relative z-10 ${viewLayout === 'list' ? 'flex items-center gap-3 w-full' : ''}`}>
-                        <div className={`flex ${viewLayout === 'list' ? 'items-center' : 'justify-between items-start'}`}>
-                          <span className={`rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold ${
-                            viewLayout === 'list' ? 'w-7 h-7 text-xs' : 'w-6 h-6 text-[10px]'
+                      <div className="absolute top-0 right-0 p-12 opacity-0 group-hover:opacity-10 transition-all duration-1000 -rotate-12 group-hover:rotate-0 translate-x-6 scale-125">
+                        <FiBook size={180} />
+                      </div>
+
+                      <div className={`flex ${viewLayout === 'grid' ? 'justify-between items-start' : 'items-center gap-8'}`}>
+                        <div className="relative">
+                          <div className={`absolute inset-0 blur-2xl opacity-50 rounded-full ${
+                            favorites.includes(surah.number) ? 'bg-white/20' : 'bg-white/20'
+                          }`} />
+                          <span className={`relative w-14 h-14 rounded-[1.2rem] flex items-center justify-center font-black text-xl shadow-xl transition-all duration-700 ${
+                            favorites.includes(surah.number) 
+                              ? 'bg-white text-[#059669] rotate-12 group-hover:rotate-0 border-2 border-white' 
+                              : 'bg-white/20 text-white group-hover:-rotate-3 border-2 border-white/30 shadow-white/20'
                           }`}>
                             {surah.number}
                           </span>
-                          {viewLayout === 'list' && (
-                            <div className="flex-1 ml-2">
-                              <h3 className="font-medium text-sm text-gray-800">{surah.englishName}</h3>
-                              <p className="text-gray-500 text-xs font-arabic">{surah.name}</p>
-                            </div>
-                          )}
-                          <button 
-                            onClick={(e) => { e.stopPropagation(); toggleFavorite(surah.number); }}
-                            className="text-gray-400 hover:text-rose-500 transition-colors"
-                          >
-                            <FiHeart size={12} className={favorites.includes(surah.number) ? 'fill-rose-500 text-rose-500' : ''} />
-                          </button>
                         </div>
-                        {viewLayout === 'grid' && (
-                          <>
-                            <h3 className="font-medium text-xs text-gray-800 mt-1.5 truncate">{surah.englishName}</h3>
-                            <p className="text-gray-500 text-[10px] font-arabic truncate">{surah.name}</p>
-                          </>
-                        )}
-                        <div className={`flex ${viewLayout === 'list' ? 'gap-2 ml-auto' : 'justify-between items-center mt-1'}`}>
-                          <span className="text-gray-400 text-[10px]">{surah.versesCount} v</span>
-                          <span className={`text-[9px] px-1 py-0.5 rounded ${
-                            surah.revelationType === 'Meccan' ? 'bg-emerald-100 text-emerald-600' : 'bg-blue-100 text-blue-600'
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); toggleFavorite(surah.number); }} 
+                          className={`p-3 rounded-[1.2rem] transition-all duration-500 ${
+                            favorites.includes(surah.number) 
+                              ? 'text-white/80 hover:text-white bg-white/20' 
+                              : 'text-white/60 group-hover:text-white/80 hover:bg-white/10 border-2 border-transparent hover:border-white/20'
+                          }`}
+                        >
+                          <FiHeart 
+                            fill={favorites.includes(surah.number) ? "currentColor" : "none"} 
+                            size={24} 
+                            className={favorites.includes(surah.number) ? 'scale-110 drop-shadow-lg' : ''}
+                          />
+                        </button>
+                      </div>
+
+                      <div className={viewLayout === 'grid' ? 'space-y-4 mt-10' : 'flex-1'}>
+                        <h3 className={`font-black tracking-tighter font-serif leading-tight ${
+                          viewLayout === 'grid' ? 'text-2xl' : 'text-3xl'
+                        } text-white`}>
+                          {surah.englishName}
+                        </h3>
+                        <p className={`font-quran transition-all duration-700 ${
+                          viewLayout === 'grid' ? 'text-4xl opacity-90' : 'text-5xl mt-1'
+                        } text-white/90`}>
+                          {surah.name}
+                        </p>
+                        <p className={`text-[9px] font-black uppercase tracking-[0.3em] opacity-60 group-hover:opacity-90 transition-opacity mt-4 italic text-white/70`}>
+                          {surah.englishNameTranslation}
+                        </p>
+                      </div>
+
+                      {viewLayout === 'grid' && (
+                        <div className="flex items-center justify-between pt-8 mt-8 border-t-2 border-white/20">
+                          <div className="flex flex-col">
+                            <span className="text-xs font-black tracking-widest text-white/80">{surah.versesCount}</span>
+                            <span className="text-[8px] font-black uppercase tracking-[0.2em] text-white/50">Sacred Ayahs</span>
+                          </div>
+                          <span className={`text-[9px] font-black px-4 py-2 rounded-xl uppercase tracking-widest border-2 transition-all ${
+                            favorites.includes(surah.number) 
+                              ? 'bg-white/20 border-white/30 text-white' 
+                              : 'bg-white/20 border-white/30 text-white'
                           }`}>
-                            {surah.revelationType === 'Meccan' ? 'M' : 'MD'}
+                            {surah.revelationType}
                           </span>
                         </div>
-                      </div>
-                    </motion.button>
+                      )}
+                    </motion.div>
                   ))}
-                </div>
-              )}
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
         ) : (
-          <div className={`h-full flex flex-col ${fullscreenMode ? 'fixed inset-0 z-50 bg-white p-4' : ''}`}>
-            {/* Surah Navigation Bar */}
-            <div className={`flex items-center justify-between flex-shrink-0 ${fullscreenMode ? 'pt-2' : 'py-2'}`}>
-              <button 
-                onClick={() => { 
-                  setSelectedSurah(null); 
-                  setVerses([]);
-                  if (currentAudio) { currentAudio.pause(); setAudioPlaying(null); }
-                  setFullscreenMode(false);
-                }} 
-                className="flex items-center gap-1.5 text-gray-500 hover:text-emerald-600 transition-colors"
-              >
-                <FiChevronLeft size={18} /> 
-                <span className="text-sm">Surahs</span>
-              </button>
+          <div className="h-full flex flex-col relative overflow-hidden bg-gradient-to-b from-white via-[#059669]/5 to-[#059669]/5">
+            <motion.section 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-gradient-to-br from-[#059669] via-[#059669] to-[#004d24] text-white px-12 md:px-20 py-16 relative overflow-hidden flex-shrink-0 shadow-2xl"
+            >
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/arabic-pixels.png')] opacity-[0.08]" />
+              <div className="absolute top-0 right-0 w-[40rem] h-[40rem] bg-[#059669]/20 rounded-full blur-[150px] -mr-48 -mt-48" />
+              <div className="absolute bottom-0 left-0 w-[30rem] h-[30rem] bg-[#004d24]/20 rounded-full blur-[150px] -ml-24 -mb-24" />
               
-              <div className="flex items-center gap-2">
-                {/* Reciter Selector */}
-                <div className="relative">
-                  <button 
-                    onClick={() => setShowReciterMenu(!showReciterMenu)}
-                    className="flex items-center gap-1 bg-gray-100 text-xs rounded-lg px-2 py-1.5 border border-gray-200 hover:border-emerald-300 transition-all"
-                  >
-                    <FiHeadphones size={12} className="text-emerald-500" />
-                    <span className="text-gray-700">{reciters.find(r => r.id === selectedReciter)?.name.split(' ')[0]}</span>
-                  </button>
+              <div className="relative z-10 flex flex-col lg:flex-row lg:items-end justify-between gap-12">
+                <div className="space-y-6 max-w-4xl">
+                  <div className="inline-flex items-center gap-3 bg-white/20 backdrop-blur-md border-2 border-white/30 px-4 py-2 rounded-full shadow-lg">
+                    <FiZap className="text-white/80 animate-pulse drop-shadow-lg" size={14} />
+                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/80">{selectedSurah.revelationType} REVELATION • CHAPTER {selectedSurah.number}</span>
+                  </div>
+                  <div className="space-y-3">
+                    <motion.h2 
+                      initial={{ x: -30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.2 }}
+                      className="text-5xl md:text-6xl font-black font-serif italic tracking-tighter leading-none drop-shadow-2xl"
+                    >
+                      {selectedSurah.englishName}
+                    </motion.h2>
+                    <p className="text-white/80 font-bold uppercase tracking-[0.3em] text-[10px] pl-2">Frequency of {selectedSurah.englishNameTranslation}</p>
+                  </div>
                   
-                  <AnimatePresence>
-                    {showReciterMenu && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -5 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -5 }}
-                        className="absolute right-0 top-full mt-1 bg-white rounded-lg border border-gray-200 shadow-lg z-50 min-w-[180px] overflow-hidden"
-                      >
-                        {reciters.map(reciter => (
-                          <button
-                            key={reciter.id}
-                            onClick={() => handleReciterChange(reciter.id)}
-                            className={`w-full text-left px-3 py-2 text-xs hover:bg-emerald-50 transition-all flex items-center gap-2 ${
-                              selectedReciter === reciter.id ? 'text-emerald-600 bg-emerald-50' : 'text-gray-700'
-                            }`}
-                          >
-                            <FiVolume2 size={12} />
-                            {reciter.name}
-                            {selectedReciter === reciter.id && <FiCheck size={12} className="ml-auto text-emerald-500" />}
-                          </button>
-                        ))}
+                  <div className="flex flex-wrap gap-3">
+                    <button 
+                      onClick={handlePlayFullSurah}
+                      className={`px-6 py-3 bg-white text-[#059669] rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] shadow-2xl shadow-[#059669]/50 flex items-center gap-3 transition-all hover:-translate-y-1 active:scale-95 border-2 border-white ${
+                        audioPlaying && audioPlaying.startsWith(`${selectedSurah.number}_`) ? 'ring-4 ring-white/50 bg-white' : ''
+                      }`}
+                    >
+                      {audioPlaying && audioPlaying.startsWith(`${selectedSurah.number}_`) ? (
+                        <><FiPause size={14} className="text-[#059669]"/> Suspend</>
+                      ) : (
+                        <><FiPlay size={14} fill="currentColor" className="text-[#059669]"/> Play Surah</>
+                      )}
+                    </button>
+                    <div className="hidden md:flex gap-3">
+                      <div className="px-6 py-3 bg-white/20 backdrop-blur-md text-white rounded-[2rem] font-black uppercase tracking-[0.2em] text-[9px] border-2 border-white/30 flex items-center gap-3 shadow-lg">
+                        <FiInfo size={12} className="text-white/80" />
+                        <span>{selectedSurah.revelationType}</span>
+                      </div>
+                      <div className="px-6 py-3 bg-white/20 backdrop-blur-md text-white rounded-[2rem] font-black uppercase tracking-[0.2em] text-[9px] border-2 border-white/30 flex items-center gap-3 shadow-lg">
+                        <FiStar size={12} className="text-white/80" />
+                        <span>{selectedSurah.versesCount} Ayahs</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-10 border-t-2 border-white/20">
+                    {['Introduction', 'Background', 'Interesting Facts'].map((title, i) => (
+                      <motion.div key={title} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 + i * 0.1 }} className="space-y-3">
+                        <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/80 flex items-center gap-2">
+                          {i === 0 ? <FiBook size={12}/> : i === 1 ? <FiClock size={12}/> : <FiZap size={12}/>}
+                          {title}
+                        </h4>
+                        {i === 2 ? (
+                          <ul className="space-y-2">
+                            {getSurahIntroduction(selectedSurah.number).facts.map((fact, j) => (
+                              <li key={j} className="text-white/80 text-[11px] font-light flex items-start gap-2">
+                                <div className="w-1 h-1 bg-white/60 rounded-full mt-1.5 flex-shrink-0" />
+                                {fact}
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="text-white/70 text-sm font-light italic leading-relaxed">
+                            {i === 0 ? getSurahIntroduction(selectedSurah.number).intro : getSurahIntroduction(selectedSurah.number).background}
+                          </p>
+                        )}
                       </motion.div>
-                    )}
-                  </AnimatePresence>
+                    ))}
+                  </div>
                 </div>
-                
-                <select
-                  value={selectedTranslation}
-                  onChange={(e) => handleTranslationChange(e.target.value)}
-                  className="bg-gray-100 text-xs rounded-lg px-2 py-1.5 border border-gray-200 focus:outline-none focus:border-emerald-300 text-gray-700"
-                >
-                  {availableTranslations.map(t => (
-                    <option key={t.id} value={t.id}>{t.name}</option>
-                  ))}
-                </select>
-                
-                <button onClick={toggleFullscreen} className="p-1.5 rounded-lg bg-gray-100 text-gray-500 hover:bg-gray-200 transition-all">
-                  {fullscreenMode ? <FiMinimize size={14} /> : <FiMaximize size={14} />}
-                </button>
+                <div className="lg:text-right">
+                  <motion.p 
+                    initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 0.3 }}
+                    className="font-quran text-[8rem] md:text-[12rem] leading-none cursor-default select-none transition-all duration-1000 hover:opacity-100 hover:text-glow"
+                  >
+                    {selectedSurah.name}
+                  </motion.p>
+                </div>
               </div>
-            </div>
+            </motion.section>
 
-            {/* Surah Header Info */}
-            <motion.div 
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl p-4 text-center border border-emerald-100 flex-shrink-0 mb-3"
-            >
-              <div className="flex justify-center gap-2 mb-2">
-                <span className={`text-[10px] px-2 py-0.5 rounded-full ${
-                  selectedSurah.revelationType === 'Meccan' ? 'bg-emerald-200 text-emerald-700' : 'bg-blue-200 text-blue-700'
-                }`}>
-                  {selectedSurah.revelationType}
-                </span>
-                <span className="text-[10px] text-gray-500">{selectedSurah.versesCount} verses</span>
-              </div>
-              <h2 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-                {selectedSurah.englishName}
-              </h2>
-              <p className="text-gray-700 text-lg font-arabic mt-1">{selectedSurah.name}</p>
-              <p className="text-gray-500 text-xs mt-1 italic">{selectedSurah.englishNameTranslation}</p>
+            <div ref={versesContainerRef} className="flex-1 overflow-y-auto px-8 md:px-24 lg:px-48 pb-48 space-y-24 bg-gradient-to-b from-white via-[#059669]/5 to-white selection:bg-[#059669]/30 border-x-2 border-[#059669]/20 dark:border-[#059669]/40 max-w-[1400px] mx-auto scroll-smooth">
               
-              {/* Play Full Surah Button */}
-              <button
-                onClick={handlePlayFullSurah}
-                className="mt-3 px-4 py-1.5 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full text-xs font-medium text-white flex items-center gap-1.5 mx-auto hover:shadow-md transition-all"
-              >
-                {audioPlaying === `surah_${selectedSurah.number}` ? (
-                  <>
-                    <FiPause size={12} /> Pause Surah
-                  </>
-                ) : (
-                  <>
-                    <FiPlay size={12} /> Play Full Surah
-                  </>
-                )}
-              </button>
-            </motion.div>
+              {selectedSurah.number !== 1 && selectedSurah.number !== 9 && verses.length > 0 && (
+                <div className="pt-20 pb-10 text-center space-y-6">
+                  <motion.p 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    className="font-quran text-5xl md:text-6xl text-[#059669] leading-relaxed drop-shadow-lg"
+                  >
+                    {BISMILLAH}
+                  </motion.p>
+                  <div className="flex items-center justify-center gap-4">
+                    <div className="h-[1px] w-16 bg-gradient-to-r from-transparent to-[#059669]" />
+                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#059669] dark:text-[#059669] italic">In the Name of Allah</p>
+                    <div className="h-[1px] w-16 bg-gradient-to-l from-transparent to-[#059669]" />
+                  </div>
+                </div>
+              )}
 
-            {/* Verses List */}
-            <div 
-              ref={versesContainerRef}
-              className="flex-1 overflow-y-auto space-y-2"
-            >
               {loadingVerses ? (
-                <div className="flex justify-center py-16">
-                  <FiLoader className="animate-spin text-emerald-500" size={28} />
+                <div className="flex flex-col items-center justify-center py-32 gap-8">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-[#059669]/30 blur-[100px] rounded-full scale-[2]" />
+                    <div className="w-24 h-24 border-4 border-[#059669]/20 border-t-[#059669] rounded-full animate-spin relative z-10 shadow-2xl" />
+                  </div>
+                  <p className="text-[#059669] font-extrabold uppercase tracking-[0.6em] text-[10px] animate-pulse">Unfolding Celestial Archive...</p>
                 </div>
               ) : (
-                verses.map((verse, idx) => (
-                  <motion.div
+                verses.map((verse) => (
+                  <motion.div 
                     key={verse.number}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: Math.min(idx * 0.003, 0.2) }}
-                    className={`group bg-white rounded-xl p-3.5 border transition-all ${
-                      selectedVerse === verse.number 
-                        ? 'border-emerald-300 shadow-md' 
-                        : 'border-gray-100 hover:border-emerald-200 hover:shadow-sm'
+                    ref={(el) => { verseRefs.current[verse.number] = el; }}
+                    initial={{ opacity: 0, y: 100 }} 
+                    whileInView={{ opacity: 1, y: 0 }} 
+                    viewport={{ once: true, margin: "-100px" }}
+                    transition={{ duration: 1.2, ease: [0.19, 1, 0.22, 1] }}
+                    className={`relative py-12 flex flex-col items-center gap-12 text-center rounded-[2rem] ${
+                      audioPlaying === `${selectedSurah.number}_${verse.number}` 
+                        ? 'bg-gradient-to-r from-[#059669]/10 via-[#059669]/5 to-[#059669]/10 shadow-2xl shadow-[#059669]/20 scale-[1.02] p-6 -mx-6' 
+                        : ''
                     }`}
                   >
-                    {/* Verse Header */}
-                    <div className="flex justify-between items-start mb-2.5">
-                      <div className="flex items-center gap-1.5">
-                        <span className="w-6 h-6 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 flex items-center justify-center text-white font-bold text-xs">
+                    <div className="flex flex-col items-center gap-6">
+                      <div className="relative">
+                        <div className={`absolute inset-0 blur-2xl rounded-full ${
+                          audioPlaying === `${selectedSurah.number}_${verse.number}` ? 'bg-[#059669]/50' : 'bg-[#059669]/20'
+                        }`} />
+                        <span className={`relative w-12 h-12 rounded-xl flex items-center justify-center font-black text-lg shadow-xl border-2 ${
+                          audioPlaying === `${selectedSurah.number}_${verse.number}`
+                            ? 'bg-[#059669] text-white border-[#059669] shadow-[#059669]/50 scale-105'
+                            : 'bg-[#059669] text-white border-[#059669] shadow-[#059669]/30'
+                        }`}>
                           {verse.number}
                         </span>
-                        <button
-                          onClick={() => handlePlayAudio(selectedSurah.number, verse.number, verse.audioUrl)}
-                          className={`p-1.5 rounded-full transition-colors ${
-                            audioError[`${selectedSurah.number}_${verse.number}`] 
-                              ? 'bg-red-100 hover:bg-red-200' 
-                              : 'bg-gray-100 hover:bg-emerald-100'
+                      </div>
+
+                      <div className="flex gap-2 p-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-xl border border-[#059669]/20 dark:border-[#059669]/30 shadow-lg">
+                        <button 
+                          onClick={() => handlePlayAudio(selectedSurah.number, verse.number, verse.audioUrl)} 
+                          className={`p-2 rounded-lg transition-all duration-500 active:scale-90 ${
+                            audioPlaying === `${selectedSurah.number}_${verse.number}` 
+                              ? 'bg-[#059669] text-white shadow-md scale-105 border border-[#059669]' 
+                              : 'text-[#059669] dark:text-[#059669] hover:text-white hover:bg-[#059669] dark:hover:bg-[#059669] border border-transparent hover:border-[#059669]'
                           }`}
-                          disabled={audioLoading[`${selectedSurah.number}_${verse.number}`]}
                         >
-                          {audioLoading[`${selectedSurah.number}_${verse.number}`] ? (
-                            <FiLoader size={11} className="text-emerald-500 animate-spin" />
-                          ) : audioError[`${selectedSurah.number}_${verse.number}`] ? (
-                            <FiVolumeX size={11} className="text-red-500" />
-                          ) : audioPlaying === `${selectedSurah.number}_${verse.number}` ? (
-                            <FiPause size={11} className="text-emerald-500" />
-                          ) : (
-                            <FiVolume2 size={11} className="text-gray-500 hover:text-emerald-500" />
-                          )}
+                          {audioLoading[`${selectedSurah.number}_${verse.number}`] 
+                            ? <FiLoader className="animate-spin" size={16}/> 
+                            : audioPlaying === `${selectedSurah.number}_${verse.number}` 
+                              ? <FiPause size={16}/> 
+                              : <FiPlay size={16}/>
+                          }
                         </button>
-                        <button
-                          onClick={() => handleTafsir(selectedSurah.number, verse.number, verse.arabic, verse.translation)}
-                          className="p-1.5 rounded-full bg-gray-100 hover:bg-emerald-100 transition-colors"
-                        >
-                          <FiInfo size={11} className="text-gray-500 hover:text-emerald-500" />
+                        <button onClick={() => handleBookmark(selectedSurah.number, verse.number)} className={`p-2 rounded-lg transition-all duration-500 active:scale-90 ${
+                          bookmarkedVerses[`${selectedSurah.number}_${verse.number}`] 
+                            ? 'bg-[#059669]/20 dark:bg-[#059669]/30 text-[#059669] dark:text-[#059669] border border-[#059669]/30' 
+                            : 'text-gray-400 dark:text-gray-500 hover:text-[#059669] hover:bg-[#059669]/10 dark:hover:bg-[#059669]/20 border border-transparent hover:border-[#059669]/20'
+                        }`}>
+                          <FiBookmark size={16} fill={bookmarkedVerses[`${selectedSurah.number}_${verse.number}`] ? "currentColor" : "none"}/>
                         </button>
-                      </div>
-                      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => handleCopyVerse(verse, verse.translation)} className="p-1.5 rounded-full bg-gray-100 hover:bg-gray-200">
-                          {copiedVerse === verse.number ? <FiCheck size={11} className="text-emerald-500" /> : <FiCopy size={11} className="text-gray-500" />}
+                        <button onClick={() => handleTafsir(selectedSurah.number, verse.number, verse.arabic, verse.translation)} className="p-2 text-gray-400 dark:text-gray-500 hover:text-[#059669] dark:hover:text-[#059669] hover:bg-[#059669]/10 dark:hover:bg-[#059669]/20 rounded-lg transition-all duration-500 active:scale-90 border border-transparent hover:border-[#059669]/20">
+                          <FiInfo size={16}/>
                         </button>
-                        <button onClick={() => handleBookmark(selectedSurah.number, verse.number)} className="p-1.5 rounded-full bg-gray-100 hover:bg-gray-200">
-                          <FiBookmark size={11} className={bookmarkedVerses[`${selectedSurah.number}_${verse.number}`] ? 'text-emerald-500 fill-emerald-500' : 'text-gray-500'} />
-                        </button>
-                        <button onClick={() => handleShare(selectedSurah.number, verse.number, verse.translation)} className="p-1.5 rounded-full bg-gray-100 hover:bg-gray-200">
-                          <FiShare2 size={11} className="text-gray-500" />
+                        <button onClick={() => handleCopyVerse(verse, verse.translation)} className="p-2 text-gray-400 dark:text-gray-500 hover:text-[#059669] dark:hover:text-[#059669] hover:bg-[#059669]/10 dark:hover:bg-[#059669]/20 rounded-lg transition-all duration-500 active:scale-90 border border-transparent hover:border-[#059669]/20">
+                          {copiedVerse === verse.number ? <FiCheck size={16} className="text-[#059669]"/> : <FiCopy size={16}/>}
                         </button>
                       </div>
                     </div>
-                    
-                    {/* Arabic Text */}
-                    <div className="text-right mb-2.5">
-                      <p className="font-arabic text-lg md:text-xl leading-[2] text-gray-800">
-                        {verse.arabic} <span className="text-xl mx-1 text-emerald-500">﴿{verse.number}﴾</span>
+
+                    <div className="w-full max-w-3xl mx-auto">
+                      <p className={`font-quran text-2xl md:text-3xl lg:text-4xl leading-[2.2] tracking-normal font-bold text-[#013220] dark:text-[#013220] ${
+                        audioPlaying === `${selectedSurah.number}_${verse.number}`
+                          ? 'text-[#059669] scale-[1.02]'
+                          : ''
+                      }`}>
+                        {verse.arabic}
                       </p>
                     </div>
-                    
-                    {/* Translation */}
-                    <div className="border-t border-gray-100 pt-2.5">
-                      <p className="text-gray-600 text-xs leading-relaxed">
-                        <span className="text-emerald-500 font-semibold mr-1.5">{verse.number}.</span>
-                        {verse.translation}
-                      </p>
-                      <div className="flex gap-3 mt-2 text-[9px] text-gray-400">
-                        <span>Juz {verse.juz}</span>
-                        <span>•</span>
-                        <span>Page {verse.page}</span>
-                        {verse.sajda && <><span>•</span><span className="text-emerald-500">Sajda</span></>}
+
+                    <div className="w-full max-w-2xl mx-auto space-y-6">
+                      <div className="flex items-center justify-center gap-4">
+                        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#059669] dark:via-[#059669] to-transparent" />
+                        <div className="flex gap-3 text-[9px] font-black uppercase tracking-[0.2em] text-[#059669]/60 dark:text-[#059669]/60">
+                          <span>JUZ {verse.juz}</span>
+                          <div className="w-0.5 h-0.5 bg-[#059669] rounded-full" />
+                          <span>PAGE {verse.page}</span>
+                          {verse.sajda && <><div className="w-0.5 h-0.5 bg-[#059669] rounded-full animate-pulse" /><span className="text-[#059669]">SAJDAH</span></>}
+                        </div>
+                        <div className="h-px flex-1 bg-gradient-to-l from-transparent via-[#059669] dark:via-[#059669] to-transparent" />
                       </div>
+
+                      <p className={`text-sm md:text-base lg:text-lg font-sans leading-relaxed font-medium px-4 text-left border-l-4 pl-5 italic ${
+                        audioPlaying === `${selectedSurah.number}_${verse.number}`
+                          ? 'text-[#059669] border-[#059669] bg-[#059669]/5 dark:bg-[#059669]/10'
+                          : 'text-[#013220] dark:text-[#013220] border-[#059669] dark:border-[#059669]'
+                      }`}>
+                        "{verse.translation}"
+                      </p>
                     </div>
-                    
-                    {/* Reflection */}
-                    <button
-                      onClick={() => setSelectedVerse(selectedVerse === verse.number ? null : verse.number)}
-                      className="mt-2.5 text-[9px] text-gray-400 hover:text-emerald-500 flex items-center gap-1 transition-colors"
-                    >
-                      <FiChevronRight className={`transform transition-transform ${selectedVerse === verse.number ? 'rotate-90' : ''}`} size={9} />
-                      Reflection
-                    </button>
-                    <AnimatePresence>
-                      {selectedVerse === verse.number && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: 'auto', opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          className="mt-2.5 p-2.5 bg-emerald-50 rounded-lg border border-emerald-100"
-                        >
-                          <p className="text-[10px] text-gray-600 mb-2">💭 Reflect on this verse...</p>
-                          <textarea
-                            placeholder="Write your reflection..."
-                            className="w-full p-2 bg-white rounded text-xs text-gray-700 placeholder-gray-400 border border-gray-200 focus:border-emerald-300 focus:outline-none resize-none"
-                            rows="2"
-                          />
-                          <button 
-                            onClick={() => {
-                              toast.success('Reflection saved! +10 XP');
-                              if (addXP) addXP(10);
-                            }}
-                            className="mt-2 px-3 py-1.5 bg-emerald-100 hover:bg-emerald-200 rounded text-xs text-emerald-700 transition-colors"
-                          >
-                            Save +10 XP
-                          </button>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
                   </motion.div>
                 ))
               )}
             </div>
           </div>
         )}
-      </div>
+      </main>
 
-      {/* Scroll to Top Button */}
       <AnimatePresence>
-        {showScrollTop && selectedSurah && (
+        {showScrollTop && (
           <motion.button
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
+            initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }}
             onClick={scrollToTop}
-            className="fixed bottom-6 right-4 w-9 h-9 rounded-full bg-emerald-500 text-white shadow-lg flex items-center justify-center hover:bg-emerald-600 z-40"
+            className="fixed bottom-8 right-8 w-10 h-10 bg-[#059669] text-white rounded-xl shadow-2xl shadow-[#059669]/30 flex items-center justify-center hover:bg-[#004d24] transition-all active:scale-95 group z-[100]"
           >
-            <FiArrowUp size={16} />
+            <FiArrowUp size={18} className="group-hover:-translate-y-1 transition-transform" />
           </motion.button>
         )}
       </AnimatePresence>
 
-      {/* Tafsir Modal */}
       <AnimatePresence>
         {showTafsir && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-            onClick={() => setShowTafsir(null)}
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-2xl max-w-xl w-full max-h-[80vh] overflow-hidden shadow-xl"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="sticky top-0 bg-white p-4 flex justify-between items-center border-b border-gray-100">
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 pointer-events-none">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-[#059669]/80 backdrop-blur-sm pointer-events-auto" onClick={() => setShowTafsir(null)} />
+            <motion.div initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 30, opacity: 0 }} className="bg-white dark:bg-gray-800 max-w-2xl w-full max-h-[80vh] rounded-2xl shadow-2xl overflow-hidden flex flex-col pointer-events-auto">
+              <header className="px-5 py-4 bg-[#059669] text-white flex justify-between items-center">
                 <div>
-                  <h3 className="text-base font-bold text-emerald-600">Tafsir</h3>
-                  <p className="text-gray-500 text-xs">Surah {showTafsir.surah}, Verse {showTafsir.verse}</p>
+                  <h3 className="text-lg font-bold font-serif italic">Sacred Tafsir</h3>
+                  <p className="text-[9px] text-white/80 font-black uppercase tracking-wider">Surah {showTafsir.surah} • Verse {showTafsir.verse}</p>
                 </div>
-                <button onClick={() => setShowTafsir(null)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg hover:bg-gray-100 transition-all">
-                  <FiX size={18} />
-                </button>
-              </div>
-              <div className="p-4 overflow-y-auto max-h-[calc(80vh-73px)]">
-                <div className="text-right mb-4 p-3 bg-gray-50 rounded-lg">
-                  <p className="font-arabic text-base text-gray-800">{showTafsir.arabic}</p>
-                  <p className="text-gray-500 text-xs mt-2 text-left">{showTafsir.translation}</p>
+                <button onClick={() => setShowTafsir(null)} className="p-1.5 hover:bg-white/10 rounded-lg transition-all"><FiX size={20}/></button>
+              </header>
+              <div className="flex-1 overflow-y-auto p-5 space-y-5">
+                <div className="space-y-3 bg-gray-50 dark:bg-gray-900 rounded-xl p-5">
+                  <p className="font-quran text-xl text-[#059669] dark:text-[#059669] text-right leading-loose">{showTafsir.arabic}</p>
+                  <div className="h-px bg-[#059669]/20 dark:bg-[#059669]/30" />
+                  <p className="text-sm font-serif italic text-gray-600 dark:text-gray-400">"{showTafsir.translation}"</p>
                 </div>
-                {showTafsir.loading ? (
-                  <div className="flex justify-center py-8">
-                    <FiLoader className="animate-spin text-emerald-500" size={22} />
-                  </div>
-                ) : (
-                  <p className="text-gray-600 text-sm leading-relaxed">{showTafsir.text}</p>
-                )}
+                <div className="space-y-3">
+                  <h4 className="text-[9px] font-black uppercase tracking-wider text-[#059669] dark:text-[#059669] flex items-center gap-1.5"><FiZap size={10}/> Essence Analysis</h4>
+                  {showTafsir.loading ? (
+                    <div className="py-10 flex flex-col items-center gap-3">
+                      <div className="w-6 h-6 border-2 border-[#059669]/20 border-t-[#059669] rounded-full animate-spin" />
+                      <p className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Opening celestial gates...</p>
+                    </div>
+                  ) : (
+                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-sm">{showTafsir.text}</p>
+                  )}
+                </div>
               </div>
+              <footer className="p-3 border-t border-gray-100 dark:border-gray-700 flex justify-end">
+                <button onClick={() => setShowTafsir(null)} className="px-4 py-1.5 bg-[#059669] text-white rounded-lg font-bold text-[10px] shadow-md hover:bg-[#004d24] transition-all">Close</button>
+              </footer>
             </motion.div>
-          </motion.div>
+          </div>
         )}
       </AnimatePresence>
 
       <style>{`
-        .font-arabic { 
-          font-family: 'Amiri', 'Scheherazade New', 'Traditional Arabic', 'Noto Naskh Arabic', serif; 
+        .bg-pattern {
+          background-image: radial-gradient(#059669 0.5px, transparent 0.5px);
+          background-size: 32px 32px;
+          background-color: #f0fdf4;
+          opacity: 0.8;
+        }
+        .font-quran {
+          font-family: "Uthmanic", "Noto Naskh Arabic", "Scheherazade New", "Traditional Arabic", "Amiri", serif;
+        }
+        .text-glow {
+          text-shadow: 0 0 30px rgba(5, 150, 105, 0.5);
         }
       `}</style>
     </div>
