@@ -119,29 +119,28 @@ Open http://localhost:5173
 
 Echoes_Of_Jannah/
 │
-├── backend/                 # Express backend
-│   ├── server.js           # Main server file
-│   ├── routes/             # API routes
-│   ├── middleware/         # Auth middleware
-│   └── utils/              # Helper functions
+├── backend/
+│ ├── server.js
+│ ├── routes/
+│ ├── middleware/
+│ └── utils/
 │
-├── src/                    # React frontend
-│   ├── components/         # All UI components
-│   ├── contexts/           # React contexts
-│   ├── pages/              # Page components
-│   ├── api/                # API calls
-│   ├── hooks/              # Custom hooks
-│   ├── App.jsx             # Main App
-│   └── main.jsx            # Entry point
+├── src/
+│ ├── components/
+│ ├── contexts/
+│ ├── pages/
+│ ├── api/
+│ ├── hooks/
+│ ├── App.jsx
+│ └── main.jsx
 │
-├── public/                 # Static files
-│   └── logo.png           # Logo image
+├── public/
+│ └── logo.png
 │
-├── package.json            # Dependencies
-├── vite.config.js         # Vite config
-├── tailwind.config.js     # Tailwind config
-├── vercel.json            # Vercel deploy config
-└── README.md              # This file
+├── package.json
+├── vite.config.js
+├── tailwind.config.js
+└── vercel.json
 
 🔐 API Endpoints
 
@@ -171,4 +170,4 @@ GET	/api/health	Health check
 Maryam - GitHub
 Project Link: https://github.com/iammaryam24/Echoes_Of_Jannah
 
-<div align="center"> <p>Made with ❤️ for the love of Quran</p> <p>“Indeed, in the remembrance of Allah do hearts find rest.” — Quran 13:28</p> </div>``
+<div align="center"> <p>Made with ❤️ for the love of Quran</p> <p>“Indeed, in the remembrance of Allah do hearts find rest.” — Quran 13:28</p> </div>
