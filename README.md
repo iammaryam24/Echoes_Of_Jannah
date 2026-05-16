@@ -119,28 +119,29 @@ Open http://localhost:5173
 
 Echoes_Of_Jannah/
 │
-├── backend/                    # Backend server
-│   ├── server.js              # Express server
-│   ├── routes/                # API routes
-│   ├── middleware/            # Auth middleware
-│   └── utils/                 # Utility functions
+├── backend/                 # Express backend
+│   ├── server.js           # Main server file
+│   ├── routes/             # API routes
+│   ├── middleware/         # Auth middleware
+│   └── utils/              # Helper functions
 │
-├── src/                       # Frontend source
-│   ├── api/                   # API integration
-│   ├── components/            # React components
-│   ├── contexts/              # Context providers
-│   ├── hooks/                 # Custom hooks
-│   ├── pages/                 # Page components
-│   ├── utils/                 # Helper functions
-│   ├── App.jsx                # Main app
-│   └── main.jsx               # Entry point
+├── src/                    # React frontend
+│   ├── components/         # All UI components
+│   ├── contexts/           # React contexts
+│   ├── pages/              # Page components
+│   ├── api/                # API calls
+│   ├── hooks/              # Custom hooks
+│   ├── App.jsx             # Main App
+│   └── main.jsx            # Entry point
 │
-├── public/                    # Static assets (logo.png, favicon)
-├── index.html
-├── package.json
-├── vite.config.js
-├── tailwind.config.js
-└── vercel.json
+├── public/                 # Static files
+│   └── logo.png           # Logo image
+│
+├── package.json            # Dependencies
+├── vite.config.js         # Vite config
+├── tailwind.config.js     # Tailwind config
+├── vercel.json            # Vercel deploy config
+└── README.md              # This file
 
 🔐 API Endpoints
 
@@ -170,4 +171,4 @@ GET	/api/health	Health check
 Maryam - GitHub
 Project Link: https://github.com/iammaryam24/Echoes_Of_Jannah
 
-<div align="center"> <p>Made with ❤️ for the love of Quran</p> <p>“Indeed, in the remembrance of Allah do hearts find rest.” — Quran 13:28</p> </div> ``
+<div align="center"> <p>Made with ❤️ for the love of Quran</p> <p>“Indeed, in the remembrance of Allah do hearts find rest.” — Quran 13:28</p> </div>``
