@@ -1,14 +1,9 @@
 <div align="center">
   
-  <!-- Banner Image -->
-  <img src="https://raw.githubusercontent.com/iammaryam24/Echoes_Of_Jannah/main/public/logo.png" alt="Echoes of Jannah Logo" width="120" />
-  
+ 
   <h1>🕌 Echoes of Jannah</h1>
   
   <p><strong>A Full-Stack Spiritual Companion App for Connecting with the Quran</strong></p>
-  
-  <!-- Banner GIF/Image -->
-  <img src="https://via.placeholder.com/1200x400/064e3b/ffffff?text=Echoes+of+Jannah+-+Your+Spiritual+Journey+Begins+Here" alt="Echoes of Jannah Banner" width="100%" />
   
   <p>
     <a href="https://echoes-of-jannah.vercel.app"><img src="https://img.shields.io/badge/Live_Demo-Vercel-000000?style=for-the-badge&logo=vercel" alt="Live Demo" /></a>
