@@ -1,25 +1,35 @@
-// server.js - COMPLETE STANDALONE VERSION
 import express from 'express';
 import cors from 'cors';
 import crypto from 'crypto';
 import axios from 'axios';
 
 const app = express();
-const PORT = 3001;
 
-// ✅ FIXED: Changed from 5173 to 3000
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+// CORS - Production ke liye bhi
+app.use(cors({ 
+  origin: ['http://localhost:3000', 'http://localhost:5173', 'https://echoes-of-jannah-wrpl.vercel.app'],
+  credentials: true 
+}));
 app.use(express.json());
 
-const CLIENT_ID = '911c5b21-975f-4610-be81-f7158e7e6047';
-const CLIENT_SECRET = 'oESUyMXqqRSkQP8HBRmATrZlwp';
-const REDIRECT_URI = 'http://localhost:3000/auth/callback';
-const AUTH_BASE = 'https://prelive-oauth2.quran.foundation';
+const CLIENT_ID = process.env.QF_CLIENT_ID || '911c5b21-975f-4610-be81-f7158e7e6047';
+const CLIENT_SECRET = process.env.QF_CLIENT_SECRET || 'oESUyMXqqRSkQP8HBRmATrZlwp';
+const REDIRECT_URI = process.env.QF_REDIRECT_URI || 'https://echoes-of-jannah-wrpl.vercel.app/auth/callback';
+const AUTH_BASE = process.env.QF_AUTH_BASE || 'https://prelive-oauth2.quran.foundation';
 
 const pkceStore = new Map();
 
+// Clean old entries
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, value] of pkceStore.entries()) {
+    if (now - value.createdAt > 600000) {
+      pkceStore.delete(key);
+    }
+  }
+}, 300000);
+
 app.get('/api/auth/login-url', (req, res) => {
-  console.log('📡 GET /api/auth/login-url');
   const codeVerifier = crypto.randomBytes(32).toString('base64url');
   const hash = crypto.createHash('sha256').update(codeVerifier).digest();
   const codeChallenge = hash.toString('base64url');
@@ -37,17 +47,14 @@ app.get('/api/auth/login-url', (req, res) => {
     code_challenge_method: 'S256',
   });
   
-  console.log('✅ Auth URL generated');
   res.json({ url: `${AUTH_BASE}/oauth2/auth?${params.toString()}` });
 });
 
 app.post('/api/auth/exchange', async (req, res) => {
-  console.log('📡 POST /api/auth/exchange');
   const { code, state } = req.body;
   const pkceData = pkceStore.get(state);
   
   if (!pkceData) return res.status(400).json({ error: 'Invalid state' });
-  
   pkceStore.delete(state);
   
   try {
@@ -72,7 +79,6 @@ app.post('/api/auth/exchange', async (req, res) => {
       user = JSON.parse(Buffer.from(payload, 'base64').toString('utf8'));
     }
     
-    console.log('✅ Token exchange successful');
     res.json({
       accessToken: tokenData.access_token,
       refreshToken: tokenData.refresh_token,
@@ -80,7 +86,6 @@ app.post('/api/auth/exchange', async (req, res) => {
       user
     });
   } catch (error) {
-    console.error('❌ Exchange failed:', error.message);
     res.status(500).json({ error: 'Token exchange failed' });
   }
 });
@@ -111,11 +116,8 @@ app.post('/api/auth/refresh', async (req, res) => {
 });
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok' });
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
-  console.log(`📌 CORS origin: http://localhost:3000`);
-  console.log(`📌 Redirect URI: ${REDIRECT_URI}`);
-});
+// ✅ Vercel ke liye export (NO app.listen!)
+export default app;
