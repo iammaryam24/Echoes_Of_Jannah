@@ -82,32 +82,6 @@ Millions reconnect with the Quran during Ramadan, but many struggle to maintain 
 | Search API | Semantic search |
 | Auth API | User authentication |
 
----
-
-## 🏗️ Architecture
-┌─────────────────────────────────────┐
-│ User Browser │
-│ (React + Vite Frontend) │
-└─────────────┬───────────────────────┘
-│ HTTPS / API Calls
-▼
-┌─────────────────────────────────────┐
-│ Backend Server (Node.js) │
-│ Express.js API │
-│ │
-│ ┌──────────┐ ┌──────────┐ │
-│ │ Auth │ │ User │ │
-│ │ Routes │ │ Routes │ │
-│ └──────────┘ └──────────┘ │
-└─────────────┬───────────────────────┘
-│ API Keys & Tokens
-▼
-┌─────────────────────────────────────┐
-│ Quran Foundation APIs │
-└─────────────────────────────────────┘
-
----
-
 ## 🚀 Getting Started
 
 ### Prerequisites
