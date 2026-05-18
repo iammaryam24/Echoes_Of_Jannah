@@ -5,13 +5,14 @@ import axios from 'axios';
 
 const app = express();
 
-// Dynamic CORS for production
+// CORS - Local + Vercel dono ke liye
 app.use(cors({ 
   origin: ['http://localhost:3000', 'http://localhost:5173', 'https://echoes-of-jannah-wrpl.vercel.app'],
   credentials: true 
 }));
 app.use(express.json());
 
+// Environment variables se le raha hai
 const CLIENT_ID = process.env.QF_CLIENT_ID || '911c5b21-975f-4610-be81-f7158e7e6047';
 const CLIENT_SECRET = process.env.QF_CLIENT_SECRET || 'oESUyMXqqRSkQP8HBRmATrZlwp';
 const REDIRECT_URI = process.env.QF_REDIRECT_URI || 'http://localhost:3000/';
@@ -113,5 +114,5 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-// ✅ Vercel export - NO app.listen!
+// ✅ Vercel ke liye export (NO app.listen!)
 export default app;
